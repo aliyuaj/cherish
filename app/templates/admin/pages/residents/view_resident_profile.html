@@ -1,0 +1,353 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Resident Profile {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/fontawesome-free/css/all.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+    <!-- Default box -->
+    <h1 class="">Resident Profile</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fas fa-minus"></i>
+                            </button>
+                            <a type="button" class="btn btn-tool" title="Edit"
+                                href="{{url_for('.edit_resident', resident_id =resident.id)}}">
+                                <i class="fas fa-edit"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <form action="{{url_for('.change_resident_photo', resident_id =resident.id)}}" method="POST"
+                                id="picForm" enctype="multipart/form-data">
+                                <input type="file" name="new_photo" id="new_photo"
+                                    onchange="document.getElementById('picForm').submit()" accept=".jpg,.jpeg, .png"
+                                    hidden>
+                            </form>
+                            {%if user.is_administrator()%}
+                                <a href="#" title="Change Photo" class="aa-img"
+                                onclick="document.getElementById('new_photo').click()">
+                            {%else%}
+                                <a href="#" title="Photo" class="aa-img">
+                            {%endif%}
+                                    <img class="profile-user-img img-fluid img-circle "
+                                        src="{{url_for('static', filename='uploads/')}}{{resident.profile_photo}}"
+                                        alt="User profile picture"></a>
+                        </div>
+
+                        <h3 class="profile-username text-center">{{resident.name}}</h3>
+
+                        <p class="text-muted text-center">{{age}} years old</p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Admission Date</b> <a class="float-right">{{resident.admission_date.strftime('%d %B,
+                                    %Y')}}</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Type</b> <a class="float-right">{{resident.resident_type}}</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Contact</b> <a class="float-right">{{resident.care_address}}</a>
+                            </li>
+                            <a href="{{url_for('static', filename='uploads/working-with-older-people.pdf')}}" class="btn-link text-secondary" download><i class="far fa-fw fa-file-pdf"></i> Care Plan</a>
+
+                        </ul>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <!-- Next of Kin Box -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i
+                                    class="fas fa-expand"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fas fa-minus"></i></button>
+                        </div>
+                        <!-- /.card-tools -->
+                        <h3 class="card-title">Next of Kin</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-user mr-1"></i> Name</strong>
+
+                        <p class="text-muted">
+                            {{resident.nok_name}} </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-mobile mr-1"></i> Phone</strong>
+
+                        <p class="text-muted">
+                            {{resident.nok_phone}}
+                        </p>
+
+                        <hr>
+                        <strong><i class="far fa-file-alt mr-1"></i> Email</strong>
+
+                        <p class="text-muted">{{resident.nok_email}}</p>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#about" data-toggle="tab">About Me</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a>
+                            </li>
+                            <!-- <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a>
+                            </li> -->
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="about">
+
+                                <div class="card-body">
+                                    <strong><i class="fas fa-user mr-1"></i> Marital Status/Ethnicity/Gender</strong>
+
+                                    <p class="text-muted">
+                                        {{resident.marital_status~" "~resident.ethnicity~ " "~resident.gender}} </p>
+
+                                    <hr>
+
+                                    <strong><i class="fas fa-book mr-1"></i> Biography</strong>
+
+                                    <p class="text-muted">
+                                        {{resident.biography}}
+                                    </p>
+
+                                    <hr>
+                                    <strong><i class="far fa-file-alt mr-1"></i> Abilities</strong>
+
+                                    <p class="text-muted">{{resident.abilities}}</p>
+
+                                    <hr>
+
+                                    <strong><i class="fas fa-file-alt mr-1"></i> Medical Conditions</strong>
+
+                                    <p class="text-muted">{{resident.medical_condition}}</p>
+
+                                    <hr>
+
+                                    <strong><i class="far fa-file-alt mr-1"></i> Diet</strong>
+
+                                    <p class="text-muted">{{resident.diet}}</p>
+                                    <hr>
+
+                                    <strong><i class="fas fa-file-alt mr-1"></i> Allergies</strong>
+
+                                    <p class="text-muted">{{resident.allergies}}</p>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <div class="tab-pane" id="activity">
+                                {%if groups.count()==0 %}
+                                <h1>No Activity Group Created</h1>
+                                {%else%}
+                                {% for group in groups%}
+                                <a href="{{url_for('.timeline', resident_id =resident.id, group_id=group.id)}}">
+                                    <button class="btn btn-lg btn-default" style="margin: 10px;"><i
+                                            class="fa fa-user"></i>
+                                        {{group.group_name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{group.time}}</button></a>
+                                {%endfor%}
+                                {%endif%}
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="timeline">
+                                <!-- The timeline -->
+                                <div class="timeline timeline-inverse">
+                                    <!-- timeline time label -->
+                                    <div class="time-label">
+                                        <span class="bg-danger">
+                                            10 Feb. 2014
+                                        </span>
+                                    </div>
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+                                    <div>
+                                        <i class="fas fa-envelope bg-primary"></i>
+
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 12:05</span>
+
+                                            <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email
+                                            </h3>
+
+                                            <div class="timeline-body">
+                                                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                                                weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                                                jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                                                quora plaxo ideeli hulu weebly balihoo...
+                                            </div>
+                                            <div class="timeline-footer">
+                                                <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END timeline item -->
+                                    <!-- timeline item -->
+                                    <div>
+                                        <i class="fas fa-user bg-info"></i>
+
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
+
+                                            <h3 class="timeline-header border-0"><a href="#">Sarah Young</a> accepted
+                                                your friend request
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <!-- END timeline item -->
+                                    <!-- timeline item -->
+                                    <div>
+                                        <i class="fas fa-comments bg-warning"></i>
+
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+
+                                            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post
+                                            </h3>
+
+                                            <div class="timeline-body">
+                                                Take me to your leader!
+                                                Switzerland is small and neutral!
+                                                We are more like Germany, ambitious and misunderstood!
+                                            </div>
+                                            <div class="timeline-footer">
+                                                <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END timeline item -->
+                                    <!-- timeline time label -->
+                                    <div class="time-label">
+                                        <span class="bg-success">
+                                            3 Jan. 2014
+                                        </span>
+                                    </div>
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+                                    <div>
+                                        <i class="fas fa-camera bg-purple"></i>
+
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+
+                                            <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos
+                                            </h3>
+
+                                            <div class="timeline-body">
+                                                <img src="http://placehold.it/150x100" alt="...">
+                                                <img src="http://placehold.it/150x100" alt="...">
+                                                <img src="http://placehold.it/150x100" alt="...">
+                                                <img src="http://placehold.it/150x100" alt="...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END timeline item -->
+                                    <div>
+                                        <i class="far fa-clock bg-gray"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+
+                            <div class="tab-pane" id="settings">
+                                <form class="form-horizontal">
+                                    <div class="form-group row">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="inputName" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="inputEmail"
+                                                placeholder="Email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="inputName2" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" id="inputExperience"
+                                                placeholder="Experience"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="inputSkills"
+                                                placeholder="Skills">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox"> I agree to the <a href="#">terms and
+                                                        conditions</a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button type="submit" class="btn btn-danger">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+</section>
+
+{%endblock%}
+{%block js %}
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+
+{%endblock%}

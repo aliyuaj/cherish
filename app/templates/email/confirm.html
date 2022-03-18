@@ -1,0 +1,8 @@
+<p>Dear {{ user.full_name }},</p>
+<p>You've been registered as admin on <b>CherishCare</b>!!</p>
+<p>To confirm your account please <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">click here</a>.</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>
+<p>Sincerely,</p>
+<p>The AidMind Team</p>
+<p><small>Note: replies to this email address are not monitored.</small></p>

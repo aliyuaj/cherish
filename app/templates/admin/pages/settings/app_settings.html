@@ -1,0 +1,583 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- {{title}} {%endblock%}
+{%block css %}
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Select2 -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+    <!-- Default box -->
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-edit"></i>
+                App Customization Tabs
+            </h3>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill"
+                        href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home"
+                        aria-selected="true">Activity Group</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill"
+                        href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile"
+                        aria-selected="false">Activity</a>
+                </li>
+            </ul>
+            <div class="tab-custom-content">
+                <p class="lead mb-0">Create <u>Groups</u>, then you can add <u>Activties</u> to them</p>
+            </div>
+            {% for message in get_flashed_messages() %}
+            {% if error %}
+            <div class="alert alert-danger">
+                {% else %}
+                <div class="alert alert-info">
+                    {% endif %}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message|safe }}
+                </div>
+                {%endfor%}
+
+                <div class="tab-content" id="custom-content-above-tabContent">
+                    <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel"
+                        aria-labelledby="custom-content-above-home-tab">
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                            data-target="#create-group">Create Group</button>
+
+                        <br>
+                        <br>
+                        {%if groups.count()==0 %}
+                        <h1 class="row justify-content-center">No Activity Group Created</h1>
+                        {%else%}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <th>Group Name</th>
+                                    <th>Time</th>
+                                </thead>
+                                <tbody>
+                                    <form action="{{url_for('.trash')}}" id="messages-form">
+                                        {% for group in groups%}
+                                        <tr>
+                                            <td class="mailbox-name">{{group.group_name}}
+                                            </td>
+                                            <td class="mailbox-name">{{group.time}}
+                                            </td>
+                                            <td class="project-actions text-right">
+                                                <a class="btn btn-info btn-sm" href="#" data-toggle="modal"
+                                                    data-target="#edit-group" data-group_name="{{group.group_name}}"
+                                                    data-time="{{group.time}}" data-group_id="{{group.id}}">
+                                                    <i class="fas fa-pencil-alt">
+                                                    </i>
+                                                    Edit
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#" data-toggle="modal"
+                                                    data-group_name="{{group.group_name}}" data-group_id="{{group.id}}"
+                                                    data-target="#delete-group">
+                                                    <i class="fas fa-trash">
+                                                    </i>
+                                                    Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </form>
+                                </tbody>
+                            </table>
+                            <!-- /.table -->
+                        </div>
+                        {%endif%}
+                    </div>
+                    <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel"
+                        aria-labelledby="custom-content-above-profile-tab">
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                            data-target="#create-activity">Create Activity</button>
+
+                        <br>
+                        <br>
+
+                        {%if activities.count()==0 %}
+                        <h1 class="row justify-content-center">No Activity Created</h1>
+                        {%else%}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped"
+                                style="border: 1px ridge rgb(179, 174, 174);">
+                                <thead>
+                                    <th>Activity</th>
+                                    <th>Options Type</th>
+                                    <th>Options</th>
+                                    <th>Groups</th>
+                                </thead>
+                                <tbody>
+                                    <form action="{{url_for('.trash')}}" id="messages-form">
+                                        {% for activity in activities%}
+                                        <tr>
+                                            <td class="">{{activity.act_name}}
+                                            </td>
+                                            <td class="">{{activity.selection_type}}
+                                            </td>
+                                            <td class="">{{activity.options}}
+                                            </td>
+                                            <td class="">
+                                                {% set act_groups=[] %}
+                                                {% set act_groups_ids=[] %}
+                                                {%for act in activity.act_group.all()%}
+                                                {% for g in groups %}
+                                                {%if g==act%}
+                                                {{act_groups.append(g.group_name) or ""}}
+                                                {{act_groups_ids.append(g.id) or ""}}
+                                                {%endif%}
+                                                {%endfor%}
+                                                {%endfor%}
+                                                {{act_groups|join('|')}}
+                                                {% set act_groups_ids= act_groups_ids|join('|')%}
+                                            </td>
+                                            <td class="project-actions float-right">
+                                                <a class="btn btn-info btn-sm" href="#" data-toggle="modal"
+                                                    style="margin: 3px;" data-target="#edit-activity"
+                                                    data-activity_name="{{activity.act_name}}"
+                                                    data-options_type="{{activity.selection_type}}"
+                                                    data-options="{{activity.options}}"
+                                                    data-act_groups="{{act_groups_ids}}"
+                                                    data-activity_id="{{activity.id}}">
+                                                    <i class="fas fa-pencil-alt">
+                                                    </i>
+                                                    Edit
+                                                </a>
+                                                <a class="btn btn-danger btn-sm" href="#" data-toggle="modal"
+                                                    data-activity_name="{{activity.act_name}}"
+                                                    data-activity_id="{{activity.id}}" data-target="#delete-activity">
+                                                    <i class="fas fa-trash">
+                                                    </i>
+                                                    Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {%endfor%}
+                                    </form>
+                                </tbody>
+                            </table>
+                            <!-- /.table -->
+                        </div>
+                        {%endif%}
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.card -->
+</section>
+<!-- /.content -->
+<div class="modal fade" id="create-group">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Group</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Enter a name and time for the activity group&hellip;</p>
+                <form action="{{url_for('.app_settings')}}" method="post" id="groupForm">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control" name="new_group" placeholder="Group name" id=""
+                                minlength="2" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group date" id="timepicker" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" placeholder="Time"
+                                    name="time" data-target="#timepicker" required />
+                                <div class="input-group-append" data-target="#timepicker" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                </div>
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                        <!-- /.form group -->
+                    </div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" value="Save">
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="edit-group">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Group</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Change the name or time for the activity group.</p>
+                <form action="{{url_for('.app_settings')}}" method="post" name="editGroupForm">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control" name="edit_group_name" placeholder="Group name"
+                                id="" minlength="2" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group date" id="edit_timepicker" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" placeholder="Time"
+                                    name="edit_group_time" data-target="#edit_timepicker" required />
+                                <div class="input-group-append" data-target="#edit_timepicker"
+                                    data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                </div>
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                        <!-- /.form group -->
+                    </div>
+                    <input type="text" name="edit_group_id" hidden>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" value="Save">
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- /.modal -->
+
+<div class="modal fade" id="delete-group">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Group</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{url_for('.app_settings')}}" method="post" name="deleteGroupForm">
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <b id="named_group"></b>?</p>
+                    <input type="text" name="delete_group_id" hidden>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="create-activity">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Activity</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Select group and enter name for the activity.</p>
+                <form action="{{url_for('.app_settings')}}" method="post" id="activityForm">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <input type="text" class="form-control" name="new_activity" placeholder="Activity name"
+                                id="na" minlength="2" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="select2 form-control" multiple="multiple"
+                                data-placeholder="Select Activity Group" name="multi_groups" id="multi_groups" required>
+                                {%for group in groups%}
+                                <option value="{{group.id}}">{{group.group_name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <!-- /.form group -->
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="form-control" name="options_type" id="options_type" onchange="optionsPane()"
+                                name="options_type" required>
+                                <option value="" selected disabled>Options Type</option>
+                                <option value="textbox">TextBox</option>
+                                <option value="select">Single Select</option>
+                                <option value="checkbox">Checkbox</option>
+                                <option value="duration">Duration</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input_fields_wrap" style="display: none;">
+                        <div class="row">
+                            <div class="form-group col-sm-8">
+                                <input type="text" class="form-control" name="option[]" placeholder="Enter option">
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <button class="add_field_button btn-outline-default form-control">Add Options</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" value="Save">
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div class="modal fade" id="edit-activity">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Activity</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Select group and enter name for the activity.</p>
+                <form action="{{url_for('.app_settings')}}" method="post" id="editActivityForm">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <input type="text" class="form-control" name="edit_activity_name"
+                                placeholder="Activity name" id="na" minlength="2" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="select2 form-control" multiple="multiple"
+                                data-placeholder="Select Activity Group" name="edit_multi_groups" id="edit_multi_groups"
+                                required>
+                                {%for group in groups%}
+                                <option value="{{group.id}}">{{group.group_name}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <!-- /.form group -->
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <select class="form-control" name="edit_options_type" id="edit_options_type" required>
+                                <option value="" selected disabled>Options Type</option>
+                                <option value="textbox">TextBox</option>
+                                <option value="select">Single Select</option>
+                                <option value="checkbox">Checkbox</option>
+                                <option value="duration">Duration</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" name="edit_activity_id" hidden>
+                    <div class="edit_activity_wrap" style="display: none;">
+                        <div class="row" id="add_button">
+                            <div class="form-group float-right">
+                                <button class="add_field_button btn-default form-control">Add More Options</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" value="Save">
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- /.modal -->
+
+<div class="modal fade" id="delete-activity">
+    <div class="modal-dialog">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Activity</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{url_for('.app_settings')}}" method="post" name="deleteActivityForm">
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <b id="named_activity"></b>?</p>
+                    <input type="text" name="delete_activity_id" hidden>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{%endblock%}
+{%block js %}
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+
+<!-- Select2 -->
+<script src="{{url_for('static' , filename='plugins/select2/js/select2.full.min.js')}}"></script>
+<script>
+    /*   $('#activityForm').on('submit', function () {
+          const optionValues = $.map($('input[type=text][name="option[]"]'), function (el) {
+              return el.value;
+          });
+          alert(optionValues)
+      }) */
+    function optionsPane() {
+        if (['select', 'checkbox'].includes($('#options_type option:selected').val(),)) {
+            var max_fields = 10; //maximum input boxes allowed
+            var wrapper = $(".input_fields_wrap"); //Fields wrapper
+            var add_button = $(".add_field_button"); //Add button ID
+            $(wrapper).show()
+            var x = 1; //initlal text box count
+            $(add_button).click(function (e) { //on add input button click
+                e.preventDefault();
+                if (x < max_fields) { //max input box allowed
+                    x++; //text box increment
+                    $(wrapper).append('<div class="form-group row"><input class="form-control col-sm-8"type="text" name="option[]" placeholder="Enter option"/><a href="#" class="remove_field" style="color:red"> &nbsp;&nbsp  Remove</a></div>'); //add input box
+                }
+            });
+
+            $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text
+                e.preventDefault(); $(this).parent('div').remove(); x--;
+            })
+
+        } else {
+            $(".input_fields_wrap").hide()
+        }
+    }
+    $(function () {
+        
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+        //Timepicker
+        $('#timepicker').datetimepicker({
+            format: 'HH:mm',
+        })
+        $('#edit_timepicker').datetimepicker({
+            format: 'HH:mm',
+        })
+        $('#edit-group').on('show.bs.modal', function (e) {
+            var groupName = $(e.relatedTarget).data('group_name')
+            var time = $(e.relatedTarget).data('time')
+            var groupid = $(e.relatedTarget).data('group_id')
+
+            $(e.currentTarget).find('input[name="edit_group_name"]').val(groupName)
+            $(e.currentTarget).find('input[name="edit_group_time"]').val(time)
+            $(e.currentTarget).find('input[name="edit_group_id"]').val(groupid)
+        })
+
+        $('#delete-group').on('show.bs.modal', function (e) {
+            var groupid = $(e.relatedTarget).data('group_id')
+            var groupName = $(e.relatedTarget).data('group_name')
+
+            $(e.currentTarget).find('#named_group').text(groupName)
+            $(e.currentTarget).find('input[name="delete_group_id"]').val(groupid)
+        })
+
+        $('#edit-activity').on('show.bs.modal', function (e) {
+            var activityName = $(e.relatedTarget).data('activity_name')
+            var selection_type = $(e.relatedTarget).data('options_type')
+            var activity_groups = $(e.relatedTarget).data('act_groups')
+            var activityid = $(e.relatedTarget).data('activity_id')
+
+            $(e.currentTarget).find('input[name="edit_activity_name"]').val(activityName)
+            $("#edit_options_type").val(selection_type)
+            $("#edit_multi_groups").val(activity_groups.split('|')).change()
+            $(e.currentTarget).find('input[name="edit_activity_id"]').val(activityid)
+
+            var wrapper = $(".edit_activity_wrap"); //Fields wrapper
+            function check_select() {
+                if ($('#edit_options_type option:selected').val()=="select") {
+                    var max_fields = 10; //maximum input boxes allowed
+                    var add_button = $(".add_field_button"); //Add button ID
+                    wrapper.show()
+                    $('div[name="rows"').remove()
+                    $('#rows').remove()
+                    var options = $(e.relatedTarget).data('options').split('|')
+                    $.each(options, function (_, option) {
+                        $(wrapper).append('<div class="form-group row" id="rows" name="rows"><input class="form-control col-sm-8"type="text" name="option[]" value="' + option + '"placeholder="Enter option"/><a href="#" class="remove_field" id="rem" style="color:red"> &nbsp;&nbsp  Remove</a></div>'); //add input box                    
+                    });
+                    var x = 1; //initlal text box count
+                    $(add_button).click(function (e) { //on add input button click
+                        e.preventDefault();
+                        if (x < max_fields) { //max input box allowed
+                            x++; //text box increment
+                            $(wrapper).append('<div class="form-group row"><input class="form-control col-sm-8"type="text" name="option[]" placeholder="Enter option"/><a href="#" class="remove_field" style="color:red"> &nbsp;&nbsp  Remove</a></div>'); //add input box
+                        }
+                    });
+
+                    $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text
+                        e.preventDefault(); $(this).parent('div').remove(); x--;
+                    })
+                }
+                else {
+                    $(wrapper).hide()
+                }
+
+            }
+            check_select()
+            $("#edit_options_type").on('change', function () {
+                check_select()
+
+            })
+
+        })
+
+        $('#delete-activity').on('show.bs.modal', function (e) {
+            var activityid = $(e.relatedTarget).data('activity_id')
+            var activityName = $(e.relatedTarget).data('activity_name')
+
+            $(e.currentTarget).find('#named_activity').text(activityName)
+            $(e.currentTarget).find('input[name="delete_activity_id"]').val(activityid)
+        })
+
+
+    })     
+</script>
+{%endblock%}

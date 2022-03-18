@@ -1,0 +1,7 @@
+    Hi CherishCare, 
+Message:
+    {{message}}
+From:
+    Name: {{name}}
+    Phone:  {{phone}}
+    Email: {{email}}

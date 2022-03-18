@@ -1,0 +1,306 @@
+{% extends 'admin_base.html'%}
+{%block title%} Admin Dashboard {%endblock%}
+{%block css %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/fontawesome-free-5/css/all.min.css')}}">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static', filename='dist/css/adminlte.min.css')}}">
+<!-- overlayScrollbars -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
+
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block page %} Dashboard{%endblock%}
+{%block main_content %}
+
+<!-- PRELOADER
+        ===============================================================-->
+{%if from_login%}
+<div id="preloader">
+  <div class="cssload-container">
+    <div class="spinner"></div>
+  </div>
+</div> {%endif%}
+
+
+
+<!-- Small boxes (Stat box) -->
+<div class="row">
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{num_residents}}</h3>
+
+        <p>Residents</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <a href="{{url_for('.view_residents')}}" class="small-box-footer">More info <i
+          class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{repairs_completion_rate}}<sup style="font-size: 20px">%</sup></h3>
+
+        <p>Repairs completion Rate</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-cog"></i>
+      </div>
+      <a href="{{url_for('.maintenance_view')}}" class="small-box-footer">More info <i
+          class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{num_staff}}</h3>
+
+        <p>Staff</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-person-add"></i>
+      </div>
+      <a href="{{url_for('.view_users')}}" class="small-box-footer">More info <i
+          class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{low_kitchen_items}}</h3>
+
+        <p>Low Kitchen Items</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="{{url_for('.kitchen')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+</div>
+
+<div class="row">
+  <!-- Left col -->
+  <section class="col-lg-7 connectedSortable">
+    <!-- Custom tabs (Charts with tabs)-->
+    <!-- Custom tabs (Charts with tabs)-->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-chart-pie mr-1"></i>
+          Staff
+        </h3>
+        
+      </div><!-- /.card-header -->
+      <div class="card-body">
+        <div class="tab-content p-0">
+          <!-- Morris chart - Sales -->
+          <div class="chart tab-pane" id="revenue-chart" style="position: relative; height: 300px;">
+            <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
+          </div>
+          <div class="chart tab-pane active" id="sales-chart" style="position: relative; height: 300px;">
+            <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+          </div>
+        </div>
+      </div><!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </section>
+  <!-- /.Left col -->
+  <!-- right col (We are only adding the ID to make the widgets sortable)-->
+  <section class="col-lg-5 connectedSortable">
+
+    <!-- Calendar -->
+    <div class="card bg-gradient-success">
+      <div class="card-header border-0">
+
+        <h3 class="card-title">
+          <i class="far fa-users"></i>
+          Resident Admission by Period
+        </h3>
+        <!-- tools card -->
+        <div class="card-tools">
+          <!-- button with a dropdown -->
+          <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <!-- /. tools -->
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body pt-0">
+        <!--The calendar -->
+        <canvas class="chart" id="line-chart"
+          style="min-height: 300px; height: 3000px; max-height: 300px; max-width: 100%;"></canvas>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+
+  </section>
+  <!-- right col -->
+</div>
+<!-- /.row (main row) -->
+<!-- /.row (main row) -->
+{%endblock%}
+{%block js %}
+
+<!-- jQuery UI 1.11.4 -->
+<script src="{{url_for('static', filename='plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script src="{{url_for('static', filename='dist/js/adminlte.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- ChartJS -->
+<script src="{{url_for('static', filename='plugins/chart.js/Chart.min.js')}}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{{url_for('static', filename='plugins/jquery-knob/jquery.knob.min.js')}}"></script>
+<!-- overlayScrollbars -->
+<script src="{{url_for('static', filename='plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script>
+  $(function () {
+    /* Chart.js Charts */
+
+    // Make the dashboard widgets sortable Using jquery UI
+    $('.connectedSortable').sortable({
+      placeholder: 'sort-highlight',
+      connectWith: '.connectedSortable',
+      handle: '.card-header, .nav-tabs',
+      forcePlaceholderSize: true,
+      zIndex: 999999
+    })
+    $('.connectedSortable .card-header, .connectedSortable .nav-tabs-custom').css('cursor', 'move')
+
+   
+    /* jQueryKnob */
+    $('.knob').knob()
+  
+    // Donut Chart
+    var pieChartCanvas = $('#sales-chart-canvas').get(0).getContext('2d')
+    var pieData = {
+      labels: [{% for role in role_dist.keys() %}
+    "{{role}}",
+      {% endfor %}],
+
+    datasets: [
+    {
+      data: [{% for count in role_dist.values() %}
+  "{{count}}",
+    {% endfor %}],
+    backgroundColor : ['#f56954', '#5469f5', '#00a65a', '#f39c12', '#724472', '#51a223', '#b75299', '#000000'],
+    }
+  ],
+}
+var pieOptions = {
+    legend: {
+      position: 'bottom',
+    },
+    maintainAspectRatio: false,
+    responsive: true,
+    title: {
+      display: true,
+      text: 'Distribution of Staff by Role'
+    },
+  }
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  });
+
+  // Sales graph chart
+  var salesGraphChartCanvas = $('#line-chart').get(0).getContext('2d');
+  //$('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    labels: [{% for period in admission_YQ_dist.keys() %}
+   "{{period}}",
+    {% endfor %}],
+  datasets: [
+    {
+      label: 'Admissions',
+      fill: false,
+      borderWidth: 2,
+      lineTension: 0,
+      spanGaps: true,
+      borderColor: '#efefef',
+      pointRadius: 3,
+      pointHoverRadius: 7,
+      pointColor: '#efefef',
+      pointBackgroundColor: '#efefef',
+      data: [{% for count in admission_YQ_dist.values() %} 
+      "{{count}}",
+        {% endfor %}]
+      }
+    ]
+  }
+
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false,
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef',
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 5000,
+          fontColor: '#efefef',
+        },
+        gridLines: {
+          display: true,
+          color: '#efefef',
+          drawBorder: false,
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  var salesGraphChart = new Chart(salesGraphChartCanvas, {
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  }
+  )
+
+});
+
+</script>
+{%endblock%}

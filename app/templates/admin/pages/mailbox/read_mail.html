@@ -1,0 +1,131 @@
+{% extends 'admin_base.html'%}
+{%block title%} Admin- Read Mail {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+{%block page %} Read Mail{%endblock%}
+
+{%block main_content %}
+
+<div class="row">
+  <div class="col-md-3 no-print">
+    <a href="{{url_for('.inbox')}}" class="btn btn-primary btn-block mb-3">Back to Inbox</a>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Folders</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item active">
+            <a href="{{url_for('.inbox')}}" class="nav-link">
+              <i class="fas fa-inbox"></i> Inbox
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{url_for('.sent')}}" class="nav-link">
+              <i class="far fa-envelope"></i> Sent
+            </a>
+          </li>
+          {%if user.is_administrator()%}
+          <li class="nav-item">
+            <a href="{{url_for('.trash')}}" class="nav-link">
+              <i class="far fa-trash-alt"></i> Trash
+            </a>
+          </li>
+          {%endif%}
+        </ul>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col -->
+  <div class="col-md-9">
+    {% for message in get_flashed_messages() %}
+        {% if error %}
+        <div class="alert alert-danger">
+          {% else %}
+          <div class="alert alert-info">
+            {% endif %}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+          </div>
+          {%endfor%}
+    <div class="card card-primary card-outline">
+      <div class="card-header no-print">
+        <h3 class="card-title">Read Mail</h3>
+
+        <div class="card-tools">
+          <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Previous"><i
+              class="fas fa-chevron-left"></i></a>
+          <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Next"><i class="fas fa-chevron-right"></i></a>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="mailbox-read-info">
+          <h4>{{message.subject}}</h4>
+          {%if message.sender_id==user.id%}
+          <h6>To: <i>{{message.recipients}}</i></h6>
+          {%else%}
+          {%set sender =users.get(message.sender_id).name%}
+
+          <h6>From: <i>{{sender}}</i></h6>
+            {%endif%}
+            <span class="mailbox-read-time float-right"> {{ moment(message.date_time).format('LLL') }}</span>
+          </h6>
+        </div>
+        <!-- /.mailbox-read-info -->
+        <div class="mailbox-read-message">
+          <p>{{message.message|safe}}</p>
+
+
+          <address>
+            <i>{{message.name}}</i><br>
+            <i>{{message.phone}}</i><br>
+        </address>
+        </div>
+        <!-- /.mailbox-read-message -->
+      </div>
+
+      <!-- /.card-footer -->
+      <div class="card-footer no-print">
+        {%if source=='inbox'%}
+        <div class="float-right">
+          <a href="{{url_for('.reply', msg_id=message.id)}}" class="btn btn-default"><i class="fas fa-reply"></i> Reply</a>
+        </div>
+        {%endif%}
+        <a href="{{url_for('admin.read', delete='delete', source=source, del_msg_id = message.id)}}"class="btn btn-default"><i class="far fa-trash-alt"></i> Delete</a>
+        <button type="button" class="btn btn-default" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col -->
+</div>
+<!-- /.row -->
+
+{%endblock%}
+{%block js %}
+<!-- jQuery -->
+<script src="{{url_for('static' , filename='plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{{url_for('static' , filename='dist/js/demo.js')}}"></script>
+{%endblock%}

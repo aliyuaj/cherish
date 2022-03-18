@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{%block title %} Home {% endblock %}
+{%block Xcss %}
+<link href="{{url_for('static', filename='assets/css/shortcodes.css')}}" rel="stylesheet">
+{% endblock %}
+{% block main %}
+<!-- SLIDER
+        ===============================================================-->
+<!-- FLEXISLIDER -->
+<header class="container-fluid intro-slider">
+    <div>
+        <div class="bg-slider-wrapper">
+            <div id="main-slider" class="flexslider bg-slider">
+                <ul class="slides">
+                    <li class="slide slide-1">
+                        <div class="push-text-slide"></div>
+                        <section class="home-promo">
+                            <div class="text-center">
+                                <h2 class="titlepro">
+                                    <span class="middle"><strong>CherishCare</strong> Solutions</span>
+                                    <span class="bottom">An Information Technology Driven Care Service Provider</span>
+                                </h2>
+                            </div>
+                        </section>
+                    </li>
+                </ul>
+            </div>
+        </div>
+</header>
+
+<!-- HOME CONTENT
+        ===============================================================-->
+<!-- PRINCIPAL SERVICES -->
+<section class="bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-3 text-center home-icons">
+                <i class="fa fa-home wow fadeInUp" data-wow-delay="20ms"></i>
+                <div>
+                    <h4>Home-Based Services</h4>
+                    <h5>Caring services can be provided at the comfort of your homes as desired</h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3 text-center home-icons">
+                <i class="fa fa-building wow fadeInUp" data-wow-delay="40ms"></i>
+                <div>
+                    <h4>Facility-Based Services</h4>
+                    <h5>Residents are housed in our facility and attended to by the best of carers and supporting staff
+                    </h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3 text-center home-icons">
+                <i class="fa fa-bed wow fadeInUp" data-wow-delay="60ms"></i>
+                <div>
+                    <h4>Live-In Care</h4>
+                    <h5>With live-in care, a CareGiver can reside at your home day and night to help you to stay
+                        comfortable
+                    </h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3 text-center home-icons">
+                <i class="fa fa-suitcase wow fadeInUp" data-wow-delay="80ms"></i>
+                <div>
+                    <h4>Consultancy</h4>
+                    <h5>Provision of professional care consultancy services to various categories of clients.</h5>
+                </div>
+            </div>
+        </div><!-- /row -->
+    </div><!-- /container -->
+</section><!-- /section Principal Services -->
+
+<!-- ABOUT US -->
+<section class="bg-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="title">
+                    <h2>About Us</h2>
+                </div>
+            </div>
+            <!-- VIDEO -->
+            <div class="col-sm-12 col-md-6">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/K_nxj3wxu7g"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="visible-xs-block visible-sm-block pt20"></div>
+            </div>
+            <!-- DESCRIPTION -->
+            <div class="col-sm-12 col-md-6">
+                <div class="blognews">
+                    <a href="#" class="mb20">
+                        <div class="item-img-wrap">
+                            <img src="{{url_for('static', filename='assets/img/about-home.jpg')}}"
+                                class="img-responsive" alt="template">
+                            <div class="item-img-overlay">
+                                <div class="about">
+                                    <span class="btn btn-transparent-sm"><i class="fa fa-plus"></i> Read more</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <p><strong>CherishCare</strong> is a company with the primary goal of
+                    providing high quality caring services with high level of professionalism through the use of
+                    state-of-the art technology, skilled manpower across the UK</p>
+            </div>
+        </div><!-- /row -->
+    </div><!-- /container -->
+</section><!-- /section About Us -->
+<!-- PERSONAL -->
+<section class="bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-r">
+                    <h2>Why Choose Us</h2>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="row wow fadeInLeft" data-wow-duration="600ms" data-wow-delay="100ms">
+                    <div class="col-xs-2 text-center">
+                        <i class="fa fa-rocket fa-4x ico-services"></i>
+                    </div>
+                    <div class="col-xs-10 servdesc">
+                        <h3>Innovative</h3>
+                        <p>We bring our diverse background of healthcare, technology and
+                            strategic planning to provide our clients with innovative solutions.
+                        </p>
+                    </div>
+                </div>
+                <div class="row wow fadeInLeft" data-wow-duration="600ms" data-wow-delay="200ms">
+                    <div class="col-xs-2 text-center">
+                        <i class="fa fa-html5 fa-4x ico-services"></i>
+                    </div>
+                    <div class="col-xs-10 servdesc">
+                        <h3>One Stop Shop</h3>
+                        <p>We handle all aspects of elderly care with our flexible and cost effective services
+                        </p>
+                    </div>
+                </div>
+                <div class="row wow fadeInLeft" data-wow-duration="600ms" data-wow-delay="300ms">
+                    <div class="col-xs-2 text-center">
+                        <i class="fa fa-puzzle-piece fa-4x ico-services"></i>
+                    </div>
+                    <div class="col-xs-10 servdesc">
+                        <h3>Proactive</h3>
+                        <p>Our service philosophy is proactive, not reactive. We respond quickly to our clients’
+                            with the sole aim of guaranteeing their comfort.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 wow fadeIn" data-wow-duration="1200ms" data-wow-delay="100ms">
+                <img src="{{url_for('static', filename='assets/img/why.jpg')}}" alt="Services"
+                    class="img-responsive img-center">
+                <p class="mt15 wow fadeIn" data-wow-duration="1200ms" data-wow-delay="100ms">We have highly skilled
+                    professional Carers with excellent knowledge and experience in providing caring services
+                    using the modern facilities. We have built a large pool of knowledge that we apply to
+                    deliver solutions that meet client's needs, expectations and budget. We put our clients at the heart
+                    of everything we do. </p>
+                <p> Our strong sense of identification with client needs means that we are constantly striving to
+                    provide services, even for issues they aren’t yet aware of.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BUY NOW -->
+<section class="bg-buy parallax process-rounded" data-stellar-background-ratio="0.5">
+    <div class="container-fluid">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="intro-text mt30 wow fadeInUp">
+                    Mission & Vision
+                </h1>
+                <p class="lead mt30">The mission & vision of CherishCare is to remain at the fore
+                    front of creativity by providing responsive solutions <br> using innovative business models and
+                    latest technologies.
+                </p>
+                <!--    <p><a href="index-slider.html" class="btn btn-default btn-primary-corp-big"><i class="fa fa-shopping-cart le"></i> Buy now with PayPal!</a></p>  -->
+            </div>
+        </div><!-- /row -->
+    </div><!-- /container-fluid -->
+</section><!-- /section Buy Now with Parallax -->
+
+
+<!-- process-section end -->
+{%endblock%}
+{%block Xjs %}
+<script src="{{url_for('static' , filename='assets/js/tether.min.js')}}"></script>
+{%endblock%}

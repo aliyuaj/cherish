@@ -1,0 +1,135 @@
+{% extends 'admin_base.html'%}
+{%block title%} Admin- Reply Mail {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static' , filename='plugins/summernote/summernote-bs4.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+{%block page %} Reply {%endblock%}
+
+{%block main_content %}
+
+<!-- Main content -->
+<div class="row">
+    <div class="col-md-3">
+        <a href="{{url_for('.inbox')}}" class="btn btn-primary btn-block mb-3">Back to Inbox</a>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Folders</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item active">
+                        <a href="{{url_for('.inbox')}}" class="nav-link">
+                            <i class="fas fa-inbox"></i> Inbox
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{url_for('.sent')}}" class="nav-link">
+                            <i class="fas fa-arrow-up"></i> Sent
+                        </a>
+                    </li>
+                    {%if user.is_administrator()%}
+                    <li class="nav-item">
+                        <a href="{{url_for('.trash')}}" class="nav-link">
+                            <i class="fas fa-trash"></i> Trash
+                        </a>
+                    </li>
+                    {%endif%}
+                </ul>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        {% for message in get_flashed_messages() %}
+        {% if error %}
+        <div class="alert alert-danger">
+            {% else %}
+            <div class="alert alert-info">
+            {% endif %}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {%endfor%}
+        <div class="card card-primary card-outline">
+            <form action="{{url_for('.reply', msg_id=message.id)}}" method="post">
+                <div class="card-header">
+                    <h3 class="card-title">Reply Mail</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="form-group">
+                        {%set sender=users.get(message.sender_id)%}
+                        <input type="hidden" value="{{sender.id}}" name="sender_id">
+                        To: <input class="form-control" placeholder="To:" name="sender_name" value="{{sender.name}}" readonly>
+                    </div>
+                    <div class="form-group">
+                        Subject:<input class="form-control" placeholder="Subject:" name="subject" value="RE: {{message.subject}}"
+                            readonly>
+                    </div>
+                    <div class="">
+                        {{message.message|safe}}
+
+                    </div>
+                    <div class="form-group">
+                        <textarea id="compose-textarea" name="content" class="form-control" style="height: 300px" required>
+
+                    </textarea>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <div class="float-right">
+                        
+                        <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i> Send</button>
+                    </div>
+                </div>
+                <!-- /.card-footer -->
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+{%endblock%}
+{%block js %}
+<!-- jQuery -->
+<script src="{{url_for('static' , filename='plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{{url_for('static' , filename='dist/js/demo.js')}}"></script>
+<script src="{{url_for('static' , filename='plugins/summernote/summernote-bs4.min.js')}}"></script>
+<script>
+    $(function () {
+        //Add text editor
+        $('#compose-textarea').summernote({
+            placeholder: 'Enter response message',
+            tabsize: 2,
+            height: 150,
+            toolbar: [
+                ['font', ['bold', 'underline', 'italic']],
+                ['view', ['fullscreen']]
+            ]
+        })
+    })
+</script>
+{%endblock%}

@@ -1,0 +1,115 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Users {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/fontawesome-free/css/all.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+  {% for message in get_flashed_messages() %}
+  {% if error %}
+  <div class="alert alert-danger">
+    {% else %}
+    <div class="alert alert-info">
+      {% endif %}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+    </div>
+    {%endfor%}
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Administrators</h3>
+    </div>
+    <div class="card-body">
+      
+      <div class="table-responsive">
+        <table id="table1" class="table table-striped projects">
+          <thead>
+            <tr>
+              <th>
+                Name
+              </th>
+              <th>
+                Email
+              </th>
+              <th class="text-center">
+                Type
+              </th>
+              <th>
+                Active?
+              </th>
+              <th>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for user in users.items %}
+            <tr>
+              <td>
+                <a>
+                  {{user.name}}
+                </a>
+                <br>
+                <small>
+                  Created {{ moment(user.created_at).format('LL') }}
+                </small>
+              </td>
+              <td>
+                {{user.email}}
+              </td>
+              <td>
+                {{user.role.name}}
+              </td>
+              <td class="project-state">
+                {% if user.active==False %}
+                <span class="badge badge-danger">
+                  {%else%}
+                  <span class="badge badge-success">
+                    {%endif%}
+                    {{user.confirmed}}</span>
+
+              </td>
+              <td class="project-actions text-right">
+                <a class="btn btn-info btn-sm" href="{{url_for('.edit_user', user_id=user.id)}}">
+                  <i class="fas fa-pencil-alt">
+                  </i>
+                  Edit
+                </a>
+                <a class="btn btn-danger btn-sm" href="{{url_for('.delete_user', user_id=user.id)}}">
+                  <i class="fas fa-trash">
+                  </i>
+                  Delete
+                </a>
+              </td>
+            </tr>
+            {%endfor%}
+
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->
+{%endblock%}
+{%block js %}
+
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+{%endblock%}

@@ -1,0 +1,22 @@
+#Environments
+.env
+.venv
+env/
+venv/
+
+#FOLDERS
+migrations
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+#Distribution/Packaging
+eggs/
+.eggs/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg

@@ -1,0 +1,82 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Residents {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/fontawesome-free/css/all.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+  <!-- Default box -->
+  <h1 class="">Residents</h1>
+  <div class="card card-solid">
+    <div class="card-body pb-0">
+      <div class="row d-flex align-items-stretch">
+        {%for resident in residents.items %}
+        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+          <div class="card bg-light">
+            <div class="card-header text-muted border-bottom-0">
+              {{resident.name.split(" ")[0]}}
+            </div>
+            <div class="card-body pt-0">
+              <div class="row">
+                <div class="col-7">
+                  <h2 class="lead"><b>{{resident.name}}</b></h2>
+                  <p class="text-muted text-sm"><b>About: </b> 
+                    {%if resident.biography != None%}
+                    {{resident.biography|truncate(50)}} 
+                    {%endif%}
+                  </p>
+                  <ul class="ml-4 mb-0 fa-ul text-muted">
+                    <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> 
+                      Address: {{resident.care_address}}</li>
+                    <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> NOK Phone #: {{resident.nok_phone}}
+                      </li>
+                  </ul>
+                </div>
+                <div class="col-5 text-center">
+                  <img src="{{url_for('static', filename='uploads/')}}{{resident.profile_photo}}" alt="" class="img-circle img-fluid">
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="text-right">
+                {%if user.is_administrator()%}
+
+                <a href="{{url_for('.edit_resident', resident_id =resident.id)}}" class="btn btn-sm bg-teal">
+                  <i class="fas fa-edit">Edit</i>
+                </a>
+                {%endif%}
+                <a href="{{url_for('.view_resident_profile', resident_id=resident.id)}}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-user"></i> View Profile
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{%endblock%}
+{%block js %}
+<!-- jQuery -->
+
+<script src="{{url_for('static' , filename='plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+{%endblock%}

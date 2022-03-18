@@ -1,0 +1,278 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Trash {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+{%block page %} Trash {%endblock%}
+
+{%block main_content %}
+
+<!-- Main content -->
+<div class="row">
+  <div class="col-md-3">
+    <a href="#" class="btn btn-primary btn-block mb-3">Trash</a>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Folders</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item active">
+            <a href="{{url_for('.inbox')}}" class="nav-link">
+              <i class="fas fa-inbox"></i> Inbox
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{url_for('.sent')}}" class="nav-link">
+              <i class="fas fa-arrow-up"></i> Sent
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-trash-alt"></i> Trash
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.card-body -->
+    </div>
+
+  </div>
+  <!-- /.col -->
+  <div class="col-md-9">
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Trash</h3>
+      </div>
+      {% for message in get_flashed_messages() %}
+      {% if error %}
+      <div class="alert alert-danger">
+        {% else %}
+        <div class="alert alert-info">
+          {% endif %}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{ message }}
+        </div>
+        {%endfor%}
+        <!-- /.card-header -->
+        <div class="card-body">
+          <div class="mailbox-controls">
+            <!-- Check all button -->
+            {%if in_messages.total>0 %}
+            <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>
+            </button>
+
+            <!-- /.btn-group -->
+            <button type="button" class="btn btn-default btn-sm" id="restore_button" data-toggle="modal"
+            data-target="#modal-restore"onclick="countSelected()" title="restore"><i
+                class="fas fa-sync-alt"></i></button>
+            <button type="button" class="btn btn-default btn-sm" id="delete_button" data-toggle="modal"
+              data-target="#modal-danger" onclick="countSelected()" title="delete"><i class="far fa-trash-alt"></i></button>
+          </div>
+          {%endif%}
+          <div class="float-right">
+            {{ macros.pagination_widget(in_messages, prev_url, next_url) }}
+          </div>
+          <!-- /.float-right -->
+        </div>
+        {%if in_messages.total==0 %}
+        <h1 class="row justify-content-center">Trash folder is empty</h1>
+        </th>
+        {%else%}
+        <div class="table-responsive mailbox-messages">
+          <table id="table1" class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Recipient/Sender</th>
+                <th>Subject</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <form action="{{url_for('.trash')}}" id="messages-form">
+                {% for message in in_messages.items%}
+                <tr>
+                  <td>
+                    <div class="icheck-primary">
+                      <input type="checkbox" value="{{message.id}}" id="{{message.id}}" name="alert_id">
+                      <label for="{{message.id}}"></label>
+                    </div>
+                  </td>
+                  {%set sender =users.get(message.sender_id).name%}
+                  <td class="mailbox-name"><a href="{{url_for('admin.read',source='trash', msg_id=message.id)}}">
+                      {%if sender==user.name%}
+                      Outbox
+                      {%else%}
+                      Inbox {%endif%}
+                    </a></td>
+                    <td class="mailbox-name"><a href="{{url_for('admin.read',source='trash', msg_id=message.id)}}">
+                      {%if sender==user.name%}
+                      {{message.recipients}}
+                      {%else%}
+                      {{sender}}
+                      {%endif%}
+                    </a></td>
+                  <td class="mailbox-subject"><b>{{message.subject}}</b> - {{message.message[:30]}}...
+                  </td>
+                  <td class="mailbox-date" style="display: inline;">{{ moment(message.date_time).format('LLL') }}</td>
+                </tr>
+                {%endfor%}
+              </form>
+              {%endif%}
+
+            </tbody>
+          </table>
+          <!-- /.table -->
+        </div>
+        <!-- /.mail-box-messages -->
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col -->
+</div>
+<div class="modal fade" id="modal-danger">
+  <div class="modal-dialog">
+    <div class="modal-content bg-danger">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete Messages</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{url_for('.trash')}}" method="POST">
+        <div class="modal-body">
+          <p>Are you sure you want to permanently delete message?</p>
+          <input type="text" name="msgIDs" id="ID" hidden>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-light" id="modal-yes">Yes</button>
+
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="modal-restore">
+  <div class="modal-dialog">
+    <div class="modal-content bg-danger">
+      <div class="modal-header">
+        <h4 class="modal-title">Restore Messages</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{url_for('.trash')}}" method="POST">
+        <div class="modal-body">
+          <p>Are you sure you want to move messages from trash?</p>
+          <input type="text" name="restore_msgIDs" id="ID" hidden>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-light" id="modal-yes">Yes</button>
+
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{%endblock%}
+{%block js %}
+
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+
+<!-- Page Script -->
+<script>
+  $(function () {
+    //Enable check and uncheck all functionality
+    $('.checkbox-toggle').click(function () {
+      var clicks = $(this).data('clicks')
+      if (clicks) {
+        //Uncheck all checkboxes
+        $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false)
+        $('#delete_msg').hide()
+        $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square')
+      } else {
+        //Check all checkboxes
+        $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true)
+        $('#delete_msg').show()
+        $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square')
+      }
+      $(this).data('clicks', !clicks)
+    })
+  });
+
+  $('#modal-danger').on('show.bs.modal', function (e) {
+    const checkboxes = countSelected()
+    let delete_count = checkboxes.length
+    if (delete_count > 0) {
+      if (delete_count == 1) {
+        var message = " message"
+      } else {
+        var message = " messages"
+      }
+      $('.modal-footer').show()
+      $(this).find('.modal-body p').html("Are you sure you want to permanently delete " + String(delete_count) + message)
+    } else {
+      $('.modal-footer').hide()
+      $(this).find('.modal-body p').html("You did not select an item to delete")
+    }
+    $(this).find('.modal-body input').val(checkboxes);
+  })
+
+  $('#modal-restore').on('show.bs.modal', function (e) {
+    const checkboxes = countSelected()
+    let restore_count = checkboxes.length
+    if (restore_count > 0) {
+      if (restore_count == 1) {
+        var message = " message"
+      } else {
+        var message = " messages"
+      }
+      $('.modal-footer').show()
+      $(this).find('.modal-body p').html("Are you sure you want to restore " + String(restore_count) + message+ " from trash")
+    } else {
+      $('.modal-footer').hide()
+      $(this).find('.modal-body p').html("You did not select any message to restore")
+    }
+    $(this).find('.modal-body input').val(checkboxes);
+  })
+  function countSelected() {
+    const checkboxes = document.querySelectorAll('input[name="alert_id"]:checked');
+    let msg_ids = []
+    checkboxes.forEach(function (checkbox) {
+      msg_ids.push(checkbox.value)
+    })
+    return msg_ids
+  }
+</script>
+
+{%endblock%}

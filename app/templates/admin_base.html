@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>CherishCare | {%block title %}{%endblock%}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{url_for('static' , filename='plugins/fontawesome-free-5/css/all.css')}}">
+  <link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+  <!-- DataTables -->
+  <link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
+  <link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='plugins/daterangepicker/daterangepicker.css')}}">
+  <!-- CSS Loader -->
+  <link rel="stylesheet" href="{{url_for('static' , filename='dist/css/preloader.css')}}">
+  {%block css %}{%endblock%}
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/favicon.png')}}">
+
+</head>
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        {%if user.is_administrator()%}
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{{url_for('admin.index')}}" class="nav-link">Dashboard</a>
+        </li>
+        {%endif%}
+      </ul>
+      <span> Hi, {{user.name}}
+      </span>
+      <!-- Right navbar links -->
+      <ul class="navbar-nav ml-auto">
+        <!-- Account Dropdown Menu -->
+        <li class="nav-item dropdown">
+          <a class="nav-link" data-toggle="dropdown" href="#">
+            <b>Account</b> <i class="fas fa-user"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dr">
+            {%if user.is_administrator()%}
+            <a href="{{url_for('admin.app_settings')}}" class="dropdown-item">
+              <i class="fas fa-arrow-circle-right mr-2"></i> App Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            {%endif%}
+            <a href="{{url_for('admin.change_password')}}" class="dropdown-item">
+              <i class="fas fa-exchange-alt mr-2"></i>Change Password
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="{{url_for('auth.logout')}}" class="dropdown-item">
+              <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </a>
+
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.navbar -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-link">
+        <img src="{{url_for('static', filename='assets/img/favicon.png')}}" alt="CherishCare Logo"
+          class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">CherishCare Tech</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <form action="{{url_for('admin.change_user_photo', user_id=user.id)}}
+          " method="post" id="pp" enctype="multipart/form-data">
+            <input type="file" name="photo" onchange="document.getElementById('pp').submit()" id="photo" hidden>
+          </form>
+          <div class="image">
+            <a href="#">
+              <img src="{{url_for('static', filename='uploads/')}}{{user.profile_photo}}"
+                onclick="document.getElementById('photo').click()" class="img-circle elevation-2" alt="User Image">
+            </a>
+          </div>
+          <div class="info">
+            <a href="#" class="d-block">{{user.username}}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+            
+
+            {%if user.is_administrator()%}
+            <li class="nav-item">
+              <a href="{{url_for('admin.index')}}" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Staff
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url_for('admin.register')}}" class="nav-link">
+                    <i class="fas fa-plus nav-icon"></i>
+                    <p>Add Staff</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.view_users')}}" class="nav-link">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>View Staff</p>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            {%endif%}
+            {%if user.is_administrator() or user.role.name=="Kitchen Staff"%}
+            <li class="nav-item">
+              <a href="{{url_for('admin.kitchen')}}" class="nav-link">
+                <i class="nav-icon fas fa-coffee"></i>
+                <p>Kitchen</p>
+              </a>
+            </li>
+            {%endif%}
+            {%if user.is_administrator() or user.role.name=="Senior Carer"%}
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Residents
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url_for('admin.add_resident')}}" class="nav-link">
+                    <i class="fas fa-plus nav-icon"></i>
+                    <p>Add Resident</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.view_residents')}}" class="nav-link">
+                    <i class="nav-icon fas fa-bars"></i>
+                    <p>View Residents</p>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            {%else%}
+            <li class="nav-item">
+              <a href="{{url_for('admin.view_residents')}}" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Residents</p>
+              </a>
+            </li>
+            {%endif%}
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-envelope"></i>
+                <p>
+                  Message Box
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url_for('admin.compose')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Compose</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.inbox')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Inbox</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.sent')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Outbox</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.trash')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Trash</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {%if user.is_administrator() or user.role.name=="Maintenance Staff"%}
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-wrench"></i>
+                <p>
+                  Maintenance
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url_for('admin.maintenance')}}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Make Request</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url_for('admin.maintenance_view')}}" class="nav-link">
+                    <i class="fas fa-circle nav-icon"></i>
+                    <p>View Requests</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {%else%}
+            <li class="nav-item">
+              <a href="{{url_for('admin.maintenance')}}" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Maintenance</p>
+              </a>
+            </li>
+            {%endif%}
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>{%block page %} {%endblock%}</h1>
+            </div>
+
+          </div>
+        </div><!-- /.container-fluid -->
+      </section>
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          {%block main_content %} {%endblock%}
+        </div><!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer no-print">
+
+      <p>
+        <strong>Copyright &copy
+          <script> document.write(new Date().getFullYear())</script>.
+        </strong>
+        CherishCare All Rights Reserved.
+      </p>
+    </footer>
+
+    <!-- ./wrapper -->
+    <script src="{{url_for('static' , filename='plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/moment/moment.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{url_for('static', filename='plugins/daterangepicker/daterangepicker.js')}}"></script>
+    <script
+      src="{{url_for('static' , filename='plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+    <script src="{{url_for('static', filename='plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
+    <script>
+      $(document).ready(function () {
+        bsCustomFileInput.init();
+        $("#table1").DataTable({
+      "responsive": true,
+      "autoWidth": false,
+      
+    });
+      });
+
+      //Window Load Function
+      //===========================================================================================
+      $(window).on('load', function () {
+        //---------------------------------------------------------------------------------------
+        //Preloader
+        //---------------------------------------------------------------------------------------
+        $('#preloader').fadeOut('slow', function () {
+          $(this).remove();
+        });
+        if (window.complete) {
+          $(window).trigger('load');
+        }
+
+
+      });
+    </script>
+    {{moment.include_moment()}}
+    {%block js%}
+
+    {%endblock%}
+
+    <!-- Page Script -->
+
+
+</body>
+
+</html>

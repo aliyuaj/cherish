@@ -1,0 +1,90 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Register Admin {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<div class="register-page">
+  <div class="register-box ">
+    <div class="register-logo">
+      <a href="url('.index')"><b>CherishCare</b>Tech</a>
+    </div>
+
+    <div class="card">
+      <div class="card-body register-card-body">
+        <p class="login-box-msg">Add Staff</p>
+        {% for message in get_flashed_messages() %}
+        {% if error %}
+        <div class="alert alert-danger">
+          {% else %}
+          <div class="alert alert-info">
+            {% endif %}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+          </div>
+          {%endfor%}
+          <form action="{{url_for('.register')}}" method="post">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Full name" name="full_name" required>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input type="email" class="form-control" placeholder="Email" name="email" required>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Username" name="username" minlength="5"
+                maxlength="10">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user-circle"></span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <select class="form-control custom-select" name="role">
+                <option selected disabled onformchange="this.hide()" value="">Select Role</option>
+                {% for role in roles %}
+                <option value="{{role.id}}">{{role.name}}</option>
+                {%endfor%}
+              </select>
+            </div>
+
+            <div class="row">
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+          <!-- /.form-box -->
+        </div><!-- /.card -->
+      </div>
+    </div>
+    <!-- /.register-box -->
+
+    {%endblock%}
+    {%block js %}
+    <!-- Bootstrap 4 -->
+    <script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+    {%endblock%}

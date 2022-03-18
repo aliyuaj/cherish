@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/favicon.png')}}">
+    <title>CherishCare - {%block title %} {% endblock %}</title>
+
+    <!-- CSS
+        ===============================================================-->
+    <!-- Bootstrap Core CSS -->
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+    <!-- Icons -->
+    <link href="{{url_for('static', filename='assets/css/font-awesome.min.css')}}" rel="stylesheet">
+    <!-- Flex Slider -->
+    <link rel="stylesheet" href="{{url_for('static', filename='assets/css/flexslider.css')}}">
+    <!-- Change color theme -->
+    <link href="{{url_for('static', filename='assets/css/style-switcher.css')}}" rel="stylesheet">
+    <!-- Template CSS -->
+    <link href="{{url_for('static', filename='assets/css/main.css')}}" id="theme" rel="stylesheet">
+    <!-- Animation -->
+    <link href="{{url_for('static', filename='assets/css/animate.min.css')}}" rel="stylesheet">
+    <!-- Slick Carousel -->
+    <link href="{{url_for('static', filename='assets/css/slick.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='dist/css/preloader.css')}}" rel="stylesheet">
+    <!-- Select Style -->
+    <link href="{{url_for('static', filename='assets/css/bootstrap-select.min.css')}}" rel="stylesheet">
+    <!-- Select Style -->
+{%block Xcss %}
+{%endblock%}
+
+    <!-- JAVASCRIPT
+        ===============================================================-->
+    <!-- HTML5 shim and Respond.js')}} IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js')}}"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js')}}"></script>
+        <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- NAVBAR
+        ===============================================================-->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{url_for('main.home')}}"><img
+                        src="{{url_for('static', filename='assets/img/logo.png')}}" alt="Logo"></a>
+            </div>
+            <div class="navbar-collapse collapse" id="nav">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="{{url_for('main.home')}}">Home</a></li>
+                    <li class=""><a href="{{url_for('auth.login')}}">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- BREADCRUMB
+        ===============================================================-->
+    <div class="breadcrumb-container">
+        <div class="container text-right">
+            <ol class="breadcrumb">
+                <li><a href="{{url_for('main.home')}}">Home</a></li>
+                <li class="active">{{title}} <i class="fa fa-arrow-down ml5"></i></li>
+            </ol>
+        </div>
+    </div>
+    {%block main %}{% endblock%}
+
+    <!-- FOOTER
+        =============================================================== -->
+    <footer>
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-widget col-sm-12 col-md-4">
+                        <h3>About us</h3>
+                        <p><a href="#">CherishCare</a>, .... We make IT
+                            happen.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fa fa-map-marker"></i> No. 3, Bronby Lane, Oxford, UK</li>
+                            <li class="number"><i class="fa fa-phone"></i> (+44) 8035784489</li>
+                            <li><i class="fa fa-envelope"></i> info@CherishCare.com</li>
+                        </ul>
+                        <div class="visible-xs-block visible-sm-block pt20"></div>
+                    </div>
+                    <div class="footer-widget col-sm-6 col-md-4">
+                        <h3>Photo Gallery</h3>
+                        <a href="{{url_for('static', filename='assets/img/gall1.jpg')}}" class="gallery"
+                            title="Photo Gallery 1">
+                            <img src="{{url_for('static', filename='assets/img/gall1.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall2.jpg')}}" class="gallery"
+                            title="Photo Gallery 2">
+                            <img src="{{url_for('static', filename='assets/img/gall2.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall3.jpg')}}" class="gallery"
+                            title="Photo Gallery 3">
+                            <img src="{{url_for('static', filename='assets/img/gall3.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall4.jpg')}}" class="gallery"
+                            title="Photo Gallery 4">
+                            <img src="{{url_for('static', filename='assets/img/gall4.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall5.jpg')}}" class="gallery"
+                            title="Photo Gallery 5">
+                            <img src="{{url_for('static', filename='assets/img/gall5.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall6.jpg')}}" class="gallery"
+                            title="Photo Gallery 6">
+                            <img src="{{url_for('static', filename='assets/img/gall6.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall7.jpg')}}" class="gallery"
+                            title="Photo Gallery 7">
+                            <img src="{{url_for('static', filename='assets/img/gall7.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall8.jpg')}}" class="gallery"
+                            title="Photo Gallery 8">
+                            <img src="{{url_for('static', filename='assets/img/gall8.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall9.jpg')}}" class="gallery"
+                            title="Photo Gallery 9">
+                            <img src="{{url_for('static', filename='assets/img/gall9.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall10.jpg')}}" class="gallery"
+                            title="Photo Gallery 10">
+                            <img src="{{url_for('static', filename='assets/img/gall10.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall1.jpg')}}" class="gallery"
+                            title="Photo Gallery 11">
+                            <img src="{{url_for('static', filename='assets/img/gall1.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <a href="{{url_for('static', filename='assets/img/gall2.jpg')}}" class="gallery"
+                            title="Photo Gallery 12">
+                            <img src="{{url_for('static', filename='assets/img/gall2.jpg')}}" alt="Gallery thumbnail">
+                        </a>
+                        <div class="visible-xs-block visible-sm-block pt20"></div>
+                    </div>
+                    <div class="footer-widget col-sm-6 col-md-4">
+                        <h3>Why Choose Us</h3>
+                        <p>We provide caring services to our clients. At <strong>CherishCare,</strong> 
+                            high quality caring solutions with excellent professional services
+                            with state-of-the art facilities is our driving force.</p>
+                        <!-- Newsletter Form-->
+                        <!--        <form method="get">
+                                <div class="input-group newsletter">
+                                    <label class="sr-only" for="subscribe-email">Enter your email...</label>
+                                    <input type="email" class="form-control" id="subscribe-email" placeholder="Enter your email...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn"><i class="fa fa-paper-plane-o"></i></button>
+                                    </span>
+                                </div>
+                            </form>
+                            <p class="newsletter-desc"><strong>No spam:</strong> consectetur adipisicing elit lorem ipsum.</p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 social">
+                        <ul class="list-inline social">
+                            <li>
+                                <a href="https://www.facebook.com/CherishCare" target="_blank">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.twitter.com/CherishCare" target="_blank">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/CherishCare/" target="_blank">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                            </li>
+                            <!--    <li>
+                                    <a href="index-slider.html" target="_blank">
+                                        <i class="fa fa-youtube"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="index-slider.html" target="_blank">
+                                        <i class="fa fa-instagram"></i>
+                                    </a>
+                                </li>
+                            </ul>   -->
+                    </div>
+                    <div class="col-sm-6 credits">
+                        <p>CherishCare &copy
+                            <script> document.write(new Date().getFullYear())</script>. All Rights Reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--back to top-->
+        <a href="index-slider.html#" class="scrollToTop"><i class="fa fa-angle-up"></i></a>
+    </footer>
+     
+    <!-- JAVASCRIPT
+        ===============================================================-->
+    <!-- JQuery -->
+    <script src="{{url_for('static', filename='assets/js/jquery-1.11.3.min.js')}}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{url_for('static' , filename='js/bootstrap.min.js')}}"></script>
+    <!-- Vanillabox -->
+    <script src="{{url_for('static', filename='assets/js/jquery.vanillabox-0.1.7.min.js')}}"></script>
+    <!-- Slick Carousel -->
+    <script src="{{url_for('static', filename='assets/js/slick.min.js')}}"></script>
+    <!-- Select Style -->
+    <script src="{{url_for('static', filename='assets/js/bootstrap-select.min.js')}}"></script>
+    <!-- Flexslider -->
+    <script src="{{url_for('static', filename='assets/js/jquery.flexslider-min.js')}}"></script>
+    <!-- Placeholder for IE9 -->
+    <script src="{{url_for('static', filename='assets/js/jquery.placeholder.min.js')}}"></script>
+    <!-- Parallax -->
+    <script src="{{url_for('static', filename='assets/js/jquery.stellar.min.js')}}"></script>
+    <!-- Parallax -->
+    <script src="{{url_for('static', filename='assets/js/jquery.stellar.min.js')}}"></script>
+    <!-- Animation -->
+    <script src="{{url_for('static', filename='assets/js/wow.min.js')}}"></script>
+    <!-- Main -->
+    <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/jquery.mixitup.min.js')}}"></script>
+    
+    
+    {%block Xjs %}
+    {%endblock%}
+    <script type="text/javascript">
+        window.onload = function links() {
+            jQuery('li.active').removeClass('active')
+            jQuery('a[href="' + location.pathname + '"]').closest('li').addClass('active'); 
+        }
+</script>   
+</body>
+
+</html>

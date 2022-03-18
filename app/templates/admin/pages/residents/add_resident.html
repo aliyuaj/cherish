@@ -1,0 +1,251 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Register Admin {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+<div class="register-logo">
+  <a href="url('.index')"><b>CherishCare</b></a>
+</div>
+<div class="">
+
+  <div class="card card-info">
+    <div class="card-header">
+      <h3 class="card-title">Add Resident</h3>
+    </div>
+    <div class="card-body card-body">
+      {% for message in get_flashed_messages() %}
+      {% if error %}
+      <div class="alert alert-danger">
+        {% else %}
+        <div class="alert alert-info">
+          {% endif %}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{ message }}
+        </div>
+        {%endfor%}
+        <form action="{{url_for('.add_resident')}}" method="post" enctype="multipart/form-data">
+          <label for=""> Personal Information</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Full Name" name="full_name" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fa fa-user"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <select class="custom-select" name="gender">
+                  <option value="" disabled selected onformchange="this.hide()">Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+            </div>
+            <!-- Date of Birth-->
+            <div class="form-group col-md-4">
+              <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" name="dob" placeholder="Date of Birth"
+                  data-target="#reservationdate" required />
+                <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <select class="custom-select" name="marital_status">
+                  <option value="" disabled selected onformchange="this.hide()"> Marital Status </option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <select class="custom-select" name="ethnicity">
+                  <option value="" disabled selected onformchange="this.hide()">Ethnicity </option>
+                  <option value="Asian">Asian</option>
+                  <option value="Black">Black</option>
+                  <option value="White">White</option>
+                  <option value="Hispanic">Hispanic</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="customFile" name="photo" accept=".jpg, .png"
+                    required>
+                  <label class="custom-file-label" for="customFile">Choose Picture </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <!-- textarea -->
+              <div class="form-group">
+                <textarea class="form-control" name="biography" rows="3" placeholder="Biography"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <!-- textarea -->
+              <div class="form-group">
+                <textarea class="form-control" name="medical_condition" rows="3"
+                  placeholder="Medical Condition"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <!-- textarea -->
+              <div class="form-group">
+                <textarea class="form-control" name="abilities" rows="3" placeholder="Abilities"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <!-- textarea -->
+              <div class="form-group">
+                <textarea class="form-control" name="allergies" rows="3" placeholder="Allergies"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <!-- textarea -->
+              <div class="form-group">
+                <textarea class="form-control" name="diet" rows="3" placeholder="Diet"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              
+            </div>
+          </div>
+          <label for=""> Next of Kin Information</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Name of Next of Kin" name="nok_name" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <div class="input-group ">
+                <input type="email" class="form-control" placeholder="Email" name="nok_email" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Phone" name="nok_phone" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-mobile"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <label for=""> Care Info</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Care Address" name="care_address" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-home"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <select class="custom-select" name="residence_type">
+                  <option value="" disabled selected onformchange="this.hide()">Residence Type </option>
+                  <option value="Temporary">Temporary</option>
+                  <option value="Permanent">Permanent</option>
+                </select>
+              </div>
+            </div>
+            <!-- Date of Admission-->
+            <div class="form-group col-md-4">
+              <div class="input-group date" id="admissiondate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" name="doa" placeholder="Date Admission"
+                  data-target="#admissiondate" required />
+                <div class="input-group-append" data-target="#admissiondate" data-toggle="datetimepicker">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-4">
+              <button type="submit" class="btn btn-block bg-gradient-primary btn-lg">Register</button>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+  </div>
+  <!-- /.register-box -->
+</div>
+{%endblock%}
+{%block js %}
+<!-- jQuery -->
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+<script>
+  $(function () {
+        //Initialize Select2 Elements
+        
+    
+        //Datemask dd/mm/yyyy
+       // $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        //Datemask2 mm/dd/yyyy
+        //$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+        //Money Euro
+        //$('[data-mask]').inputmask()
+    
+        //Date range picker
+        $('#reservationdate').datetimepicker({
+            format: 'DD/MM/YYYY',
+            minYear: 1901,
+            maxYear: 2022,
+        });
+        //Date range picker
+        $('#admissiondate').datetimepicker({
+          format: 'DD/MM/YYYY'
+        });
+      })
+</script>
+{%endblock%}

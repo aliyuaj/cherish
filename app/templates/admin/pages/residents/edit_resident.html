@@ -1,0 +1,247 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- Edit Resident Profile {%endblock%}
+{%block css %}
+<!-- Ionicons -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+<div class="register-logo">
+  <a href="url('.index')"><b>CherishCare</b></a>
+</div>
+<div class="">
+
+  <div class="card card-info">
+    <div class="card-header">
+      <h3 class="card-title">Edit Resident Profile</h3>
+    </div>
+    <div class="card-body card-body">
+      {% for message in get_flashed_messages() %}
+      {% if error %}
+      <div class="alert alert-danger">
+        {% else %}
+        <div class="alert alert-info">
+          {% endif %}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{ message }}
+        </div>
+        {%endfor%}
+        <form action="{{url_for('.edit_resident', resident_id=resident.id)}}" method="post" enctype="multipart/form-data">
+          <label for=""> PERSONAL INFORMATION</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="">Full Name</label>
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Full Name" name="full_name" value='{{resident.name}}' required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fa fa-user"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Gender</label>
+                <select class="custom-select" name="gender" >
+                  <option value="Male" {%if resident.gender=="Male"%} selected="selected" {%endif%}>Male</option>
+                  <option value="Female" {%if resident.gender=="Female"%} selected="selected" {%endif%}>Female</option>
+                </select>
+              </div>
+            </div>
+            <!-- Date of Birth-->
+            <div class="form-group col-md-4">
+              <label for="">Date of Birth</label>
+              <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" value={{resident.dob.strftime("%d/%m/%Y")}} name="dob" placeholder="Date of Birth"
+                  data-target="#reservationdate" required />
+                <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="">Marital Status</label>
+              <div class="form-group">
+                <select class="custom-select" name="marital_status">
+                  <option value="Single" {%if resident.marital_status=="Single"%} selected="selected" {%endif%}>Single</option>
+                  <option value="Married" {%if resident.marital_status=="Married"%} selected="selected" {%endif%}>Married</option>
+                  <option value="Divorced" {%if resident.marital_status=="Divorced"%} selected="selected" {%endif%}>Divorced</option>
+                  <option value="Widowed" {%if resident.marital_status=="Widowed"%} selected="selected" {%endif%}>Widowed</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="">Ethnicity</label>
+              <div class="form-group">
+                <select class="custom-select" name="ethnicity">
+                  <option value="Asian" {%if resident.ethnicity=="Asian"%} selected="selected" {%endif%}>Asian</option>
+                  <option value="Black" {%if resident.ethnicity=="Black"%} selected="selected" {%endif%}>Black</option>
+                  <option value="White" {%if resident.ethnicity=="White"%} selected="selected" {%endif%}>White</option>
+                  <option value="Hispanic" {%if resident.ethnicity=="Hispanic"%} selected="selected" {%endif%}>Hispanic</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <label for="">Biography</label>
+              <div class="form-group">
+                <textarea class="form-control" name="biography" rows="3" placeholder="Biography">{{resident.biography}}</textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label for="">Medical Condition</label>
+              <div class="form-group">
+                <textarea class="form-control" name="medical_condition" rows="3"
+                  placeholder="Medical Condition" >{{resident.medical_condition}}</textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label for="">Abilities</label>
+              <div class="form-group">
+                <textarea class="form-control" name="abilities" rows="3" placeholder="Abilities">{{resident.abilities}}</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <label for="">Allergies</label>
+              <div class="form-group">
+                <textarea class="form-control" name="allergies" rows="3" placeholder="Allergies" >{{resident.allergies}}</textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <label for="">Diet</label>
+              <div class="form-group">
+                <textarea class="form-control" name="diet" rows="3" placeholder="Diet">{{resident.diet}}</textarea>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              
+            </div>
+          </div>
+          <label for=""> NEXT OF KIN (NOK) INFORMATION</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="">Name of NOK</label>
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Name of Next of Kin" name="nok_name" value="{{resident.nok_name}}" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="">Email of NOK</label>
+              <div class="input-group ">
+                <input type="email" class="form-control" placeholder="Email" name="nok_email" value={{resident.nok_email}} required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="">Phone of NOK</label>
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Phone" name="nok_phone" value={{resident.nok_phone}} required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-mobile"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <label for=""> CARE INFO</label>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="">Care Address</label>
+              <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Care Address" name="care_address" value="{{resident.care_address}}" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-home"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="">Residency Type</label>
+              <div class="form-group">
+                <select class="custom-select" name="residence_type">
+                  <option value="Temporary" {%if resident.resident_type=="Temporary"%} selected="selected" {%endif%}>Temporary</option>
+                  <option value="Permanent" {%if resident.resident_type=="Permanent"%} selected="selected" {%endif%}>Permanent</option>
+                </select>
+              </div>
+            </div>
+            <!-- Date of Admission-->
+            <div class="form-group col-md-4">
+              <label for="">Date of Admission</label>
+              <div class="input-group date" id="admissiondate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" name="doa" placeholder="Date Admission"
+                value={{resident.admission_date.strftime("%d/%m/%Y")}} data-target="#admissiondate" required />
+                <div class="input-group-append" data-target="#admissiondate" data-toggle="datetimepicker">
+                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-4">
+              <button type="submit" class="btn btn-block bg-gradient-primary btn-lg">Save Changes</button>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+  </div>
+  <!-- /.register-box -->
+</div>
+{%endblock%}
+{%block js %}
+<!-- jQuery -->
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+<script>
+  $(function () {
+        //Initialize Select2 Elements
+        
+    
+        //Datemask dd/mm/yyyy
+       // $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        //Datemask2 mm/dd/yyyy
+        //$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+        //Money Euro
+        //$('[data-mask]').inputmask()
+    
+        //Date range picker
+        $('#reservationdate').datetimepicker({
+          format: 'DD/MM/YYYY'
+        });
+        //Date range picker
+        $('#admissiondate').datetimepicker({
+          format: 'DD/MM/YYYY'
+        });
+      })
+</script>
+{%endblock%}

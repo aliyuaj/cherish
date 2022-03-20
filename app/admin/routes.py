@@ -237,11 +237,11 @@ def register():
         email_check = User.query.filter_by(email=email).first()
         if email_check:
             flash('Email already registered')
-            return redirect(url_for('.register'))
-
         uname = User.query.filter_by(username=username).first()
         if uname:
             flash('This username is already taken', category='error')
+        
+        if email_check or uname:
             return redirect(url_for('.register'))
         
         user = User(email=email, 
@@ -266,7 +266,7 @@ def register():
 def view_users():
 
     page = request.args.get('page', 1, type=int)
-    users = User.query.join(Role).filter(User.id != current_user.id).paginate(
+    users = User.query.join(Role).paginate(
         page,  current_app.config['ITEMS_PER_PAGE'], True
     )
     prev_url = None
@@ -286,8 +286,14 @@ def view_users():
 def edit_user(user_id):
     if request.method == 'POST':
         new_role = request.form.get('role')
+        name = request.form.get('full_name')
+        email = request.form.get('email')
+        username = request.form.get('username')
         user = User.query.get_or_404(user_id)
         user.role_id = new_role     
+        user.name = name     
+        user.email = email     
+        user.username = username     
         db.session.add(user)
         db.session.commit()
         flash('Profile successfully updated', category='success')

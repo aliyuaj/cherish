@@ -56,6 +56,7 @@
           </thead>
           <tbody>
             {%for user in users.items %}
+            {{user.name}}
             <tr>
               <td>
                 <a>
@@ -87,11 +88,13 @@
                   </i>
                   Edit
                 </a>
+                {%if not user.is_administrator()%}
                 <a class="btn btn-danger btn-sm" href="{{url_for('.delete_user', user_id=user.id)}}">
                   <i class="fas fa-trash">
                   </i>
                   Delete
                 </a>
+                {%endif%}
               </td>
             </tr>
             {%endfor%}

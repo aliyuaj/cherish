@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Tell the browser to be responsive to screen width -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/favicon.png')}}">
@@ -18,8 +19,6 @@
     <link href="{{url_for('static', filename='assets/css/font-awesome.min.css')}}" rel="stylesheet">
     <!-- Flex Slider -->
     <link rel="stylesheet" href="{{url_for('static', filename='assets/css/flexslider.css')}}">
-    <!-- Change color theme -->
-    <link href="{{url_for('static', filename='assets/css/style-switcher.css')}}" rel="stylesheet">
     <!-- Template CSS -->
     <link href="{{url_for('static', filename='assets/css/main.css')}}" id="theme" rel="stylesheet">
     <!-- Animation -->
@@ -27,8 +26,11 @@
     <!-- Slick Carousel -->
     <link href="{{url_for('static', filename='assets/css/slick.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='dist/css/preloader.css')}}" rel="stylesheet">
-    <!-- Select Style -->
-    <link href="{{url_for('static', filename='assets/css/bootstrap-select.min.css')}}" rel="stylesheet">
+    <style>
+.navbar-collapse.in {
+      display: block;       
+}
+    </style>
     <!-- Select Style -->
 {%block Xcss %}
 {%endblock%}
@@ -214,22 +216,18 @@
      
     <!-- JAVASCRIPT
         ===============================================================-->
-    <!-- JQuery -->
-    <script src="{{url_for('static', filename='assets/js/jquery-1.11.3.min.js')}}"></script>
+        <!-- JQuery -->
+        <script src="{{url_for('static', filename='assets/js/jquery-1.11.3.min.js')}}"></script>
     <!-- Bootstrap Core JavaScript -->
-    <script src="{{url_for('static' , filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='js/bootstrap.js')}}"></script>
     <!-- Vanillabox -->
     <script src="{{url_for('static', filename='assets/js/jquery.vanillabox-0.1.7.min.js')}}"></script>
     <!-- Slick Carousel -->
     <script src="{{url_for('static', filename='assets/js/slick.min.js')}}"></script>
     <!-- Select Style -->
-    <script src="{{url_for('static', filename='assets/js/bootstrap-select.min.js')}}"></script>
     <!-- Flexslider -->
     <script src="{{url_for('static', filename='assets/js/jquery.flexslider-min.js')}}"></script>
-    <!-- Placeholder for IE9 -->
-    <script src="{{url_for('static', filename='assets/js/jquery.placeholder.min.js')}}"></script>
     <!-- Parallax -->
-    <script src="{{url_for('static', filename='assets/js/jquery.stellar.min.js')}}"></script>
     <!-- Parallax -->
     <script src="{{url_for('static', filename='assets/js/jquery.stellar.min.js')}}"></script>
     <!-- Animation -->
@@ -246,6 +244,7 @@
             jQuery('li.active').removeClass('active')
             jQuery('a[href="' + location.pathname + '"]').closest('li').addClass('active'); 
         }
+        
 </script>   
 </body>
 

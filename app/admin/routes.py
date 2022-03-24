@@ -26,9 +26,11 @@ def index():
 
     num_staff=User.query.count()  
     num_residents=Resident.query.count()  
+
     repairs_count = Maintenance.query.count() 
-    repairs_completed = Maintenance.query.filter(Maintenance.status=='Fixed').count() 
-    repairs_completion_rate = round((repairs_completed/repairs_count)*100, 1)
+    repairs_completed = Maintenance.query.filter(Maintenance.status=='Fixed').count() #repair works completed
+    repairs_completion_rate = round((repairs_completed/repairs_count)*100, 1) #completion rate
+    #count kitchen items below ideal level
     low_kitchen_items = Kitchen.query.filter(Kitchen.quantity_left<Kitchen.safe_quantity).count()
     return render_template('admin/index.html', user=current_user, from_login=from_login, low_kitchen_items=low_kitchen_items,
             num_staff=num_staff, num_residents=num_residents, repairs_completion_rate=repairs_completion_rate,
@@ -69,6 +71,7 @@ def inbox():
             for id in msg_ids:
                 trash_msg=Messages.query.get(id)
                 trash_msg.is_trashed = True
+                #combine users that trashed a message seperated by |
                 trash_msg.trashed_by_id = '|'+current_user.get_id()+'|' if trash_msg.trashed_by_id== '' else trash_msg.trashed_by_id+current_user.get_id()+'|'
                 db.session.add(trash_msg)
                 db.session.commit()
@@ -103,6 +106,7 @@ def sent():
             for id in msg_ids:
                 trash_msg=Messages.query.get(id)
                 trash_msg.is_trashed = True
+                #combine users that trashed a message seperated by |
                 trash_msg.trashed_by_id = '|'+current_user.get_id()+'|' if trash_msg.trashed_by_id== '' else trash_msg.trashed_by_id+current_user.get_id()+'|'
                 db.session.add(trash_msg)
                 db.session.commit()
@@ -132,19 +136,12 @@ def sent():
 @admin.route('/trash', methods=['GET', 'POST'])
 @login_required
 def trash(msg_id=None):
-    if msg_id:
-        delete = delete_item(msg_id, 'messages')
-        if delete == True:
-            flash('Message Successfully Deleted')
-        else:
-            flash(f'Messages cannot be deleted', category='error')
-        return redirect(url_for('.trash'))        
-
     if request.method == 'POST':
         msg_ids = request.form.get('msgIDs', None)
         if msg_ids:
             for id in msg_ids:
                 msg = Messages.query.get(id)
+                #combine users that deleted a message seperated by |
                 if msg.deleted_by_id=='':
                     msg.deleted_by_id = "|"+current_user.get_id()+"|"
                 else:
@@ -158,6 +155,7 @@ def trash(msg_id=None):
         if restore_msg_ids:
             for id in restore_msg_ids:
                 msg = Messages.query.get(id)
+                #remove user from those that trashed a message
                 msg.trashed_by_id = msg.trashed_by_id.replace("|"+current_user.get_id()+"|", "|")
                 db.session.add(msg)
                 db.session.commit()

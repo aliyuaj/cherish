@@ -1,0 +1,217 @@
+{% extends 'admin_base.html'%}
+{% import "macros.html" as macros %}
+{%block title%} Admin- {{title}} {%endblock%}
+{%block css %}
+<!-- Theme style -->
+<link rel="stylesheet" href="{{url_for('static' , filename='dist/css/adminlte.min.css')}}">
+<!-- Select2 -->
+<link rel="stylesheet" href="{{url_for('static', filename='plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+<style>
+    area {
+        outline: 5px solid var(--red);
+    }
+</style>
+{%endblock%}
+<!-- Main content -->
+
+{%block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+    <!-- Default box -->
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-magic"></i>
+                Cleaning Record last 24 hours
+            </h3>
+        </div>
+        <div class="card-body">
+
+
+            {% for message in get_flashed_messages() %}
+            {% if error %}
+            <div class="alert alert-danger  justify-content-center">
+                {% else %}
+                <div class="alert alert-info  justify-content-center">
+                    {% endif %}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message|safe }}
+                </div>
+                {%endfor%}
+
+                <div class="tab-content" id="custom-content-above-tabContent">
+                    <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel"
+                        aria-labelledby="custom-content-above-home-tab">
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                            data-target="#request-repair">Update Cleaning</button>
+
+                        <br>
+                        <br>
+                        {%if cleanings.count()==0 %}
+                        <h1 class="row justify-content-center">No cleaning has been done today</h1>
+                        {%else%}
+                        <div class="table-responsive">
+                            <table id="table1" class="table table-hover table-striped">
+                                <thead>
+                                    <th>Location</th>
+                                    <th>Cleaner</th>
+                                    <th>Time</th>
+                                </thead>
+                                <tbody>
+                                    {% for clean in cleanings%}
+                                    <tr>
+                                        <td class="mailbox-name">{{clean.location}}
+                                        </td>
+                                        <td class="mailbox-name">{{clean.cleaner.name}}
+                                        </td>
+                                        <td class="mailbox-name">{{clean.date_time.strftime("%d %B, %Y %H:%M %p")}}
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                    </form>
+                                </tbody>
+                            </table>
+                            <!-- /.table -->
+                        </div>
+                        {%endif%}
+                    </div>
+
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.card -->
+</section>
+<!-- /.content -->
+
+<div class="modal fade" id="request-repair">
+    <div class="modal-dialog" style="max-width:700px!important;">
+        <div class="modal-content bg-default">
+            <div class="modal-header">
+                <h4 class="modal-title">Cleaning update</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Enter area and cleaning time.</p>
+                <form action="{{url_for('.cleaning')}}" method="post" id="cleaningceForm">
+                    <label>Time Cleaned:</label>
+                    <!-- Date and time range -->
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                            </div>
+                            <input type="text" class="form-control float-right" id="reservationtime" name="time_cleaned">
+                        </div>
+                        <!-- /.input group -->
+                    </div>
+                    <!-- /.form group --><label for="new_item">Location</label>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <div class="overflow-auto">
+                                <img class="img img-fluid map"
+                                    src="{{url_for('static', filename='assets/img/FloorPlan.png')}}"
+                                    style="min-width: 623px;" width="623px" height="471px" usemap="#home-plan">
+
+                                <map name="home-plan">
+                                    <area target="" alt="Room 1" title="Room 1" href="#"
+                                        coords="161,123,75,126,77,55,83,40,100,38,156,58" shape="poly">
+                                    <area target="" alt="Room 2" title="Room 2" href="#"
+                                        coords="161,57,241,43,244,126,162,126,160,66,162,67,164,119,164,91,163,94,162,59,162,58"
+                                        shape="poly">
+                                    <area target="" alt="Room 3" title="Room 3" href="#"
+                                        coords="255,44,246,67,248,124,330,124,332,54,282,42" shape="poly">
+                                    <area target="" alt="Room 4" title="Room 4" href="#"
+                                        coords="338,124,418,124,414,51,330,54" shape="poly">
+                                    <area target="" alt="Room 5" title="Room 5" href="#"
+                                        coords="419,52,504,53,505,122,419,124" shape="poly">
+                                    <area target="" alt="Room 6" title="Room 6" href="#"
+                                        coords="510,52,587,52,592,127,505,123" shape="poly">
+                                    <area target="" alt="Room 7" title="Room 7" href="#"
+                                        coords="75,297,160,302,157,385,78,380" shape="poly">
+                                    <area target="" alt="Room 8" title="Room 8" href="#"
+                                        coords="160,299,243,297,244,382,218,391,162,369,161,357" shape="poly">
+                                    <area target="" alt="Room 9" title="Room 9" href="#"
+                                        coords="244,300,330,297,332,368,277,389,249,375" shape="poly">
+                                    <area target="" alt="Room 10" title="Room 10" href="#"
+                                        coords="332,300,417,301,415,375,388,389,335,363" shape="poly">
+                                    <area target="" alt="kitchen" title="Kitchen" href="#" coords="331,261,421,162"
+                                        shape="rect">
+                                    <area target="" alt="food storage" title="Food Storage" href="#"
+                                        coords="247,262,329,164" shape="rect">
+                                    <area target="" alt="housekeeping" title="Housekeeping" href="#"
+                                        coords="179,225,210,163" shape="rect">
+                                    <area target="" alt="laundry" title="Laundry" href="#" coords="214,223,243,164"
+                                        shape="rect">
+                                    <area target="_top" alt="reception" title="Reception" href="#"
+                                        coords="75,299,175,131" shape="rect">
+                                    <area target="" alt="Kitchen/Dishwashing" title="Kitchen/Dishwashing" href="#"
+                                        coords="422,262,590,264,594,352,567,409,507,434,446,404,422,350" shape="poly">
+                                    <area target="" alt="common Room " title="Common Room " href="#"
+                                        coords="425,260,588,128" shape="rect">
+                                    <area target="" alt="left corridor" title="Left Corridor" href="#"
+                                        coords="178,162,420,130" shape="rect">
+                                    <area target="" alt="right corridor" title="Right Corridor" href="#"
+                                        coords="417,295,175,264" shape="rect">
+                                </map>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 style="color: red;" id="state">You are yet to select an area</h5>
+                    <input type="text" class="form-control" name="loc_name" required hidden>
+                    
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-success" value="Save as Cleaned">
+                    
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+{%endblock%}
+{%block js %}
+<!-- Bootstrap 4 -->
+<script src="{{url_for('static' , filename='plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static' , filename='dist/js/adminlte.min.js')}}"></script>
+
+<!-- Select2 -->
+<script src="{{url_for('static' , filename='plugins/select2/js/select2.full.min.js')}}"></script>
+<script src="{{url_for('static' , filename='plugins/maphilight/maphilight.min.js')}}"></script>
+<script>
+    $(function () {
+        $('.map').maphilight();
+
+        $('area').on('click', function () {
+            var loc = $(this).attr('title')
+            $('input[name="loc_name"]').val(loc)
+            $('#state').html("You selected: <b>" + $('input[name="loc_name"]').val() + "</b>")
+            $("#state").css("color", "limegreen");
+        })
+
+        //Date range picker with time picker
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            singleDatePicker: true,
+            minDate: moment().add(-1,'days').format('DD/MM/YYYY  hh:mm A'),
+            maxDate: moment().format('DD/MM/YYYY  hh:mm A'),
+            locale: {
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        })
+    })
+
+</script>
+{%endblock%}

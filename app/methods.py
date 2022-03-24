@@ -86,3 +86,25 @@ def remove_photo(photo):
         except Exception as e:
             print(e)
     return {'status':'failed'}
+
+def upload_pdf(uploaded_file):
+    filename = secure_filename(uploaded_file.filename)
+    if filename != '':
+        file_ext = os.path.splitext(filename)[1]
+        app = current_app._get_current_object()
+        if file_ext != '.pdf':
+            return {'status':'failed'}
+        filename = str(int(datetime.now().timestamp()))+"_"+filename
+        uploaded_file.save(os.path.join(app.config['PDF_UPLOAD_DEST'], filename))
+        return {'status':'success', 'file':filename}
+    return {'status': 'failed'}
+
+def remove_pdf(file):
+    if file and file != 'careplan.pdf':
+        try:
+            app = current_app._get_current_object()
+            os.remove(os.path.join(app.config.get('PDF_UPLOAD_DEST'), file))
+            return {'status':'success'}
+        except Exception as e:
+            print(e)
+    return {'status':'failed'}

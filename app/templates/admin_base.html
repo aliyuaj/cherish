@@ -9,16 +9,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{url_for('static' , filename='plugins/fontawesome-free-5/css/all.css')}}">
-  <link rel="stylesheet"
-    href="{{url_for('static', filename='plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
-  <!-- DataTables -->
+ <!-- DataTables -->
   <link rel="stylesheet"
     href="{{url_for('static', filename='plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-  <link rel="stylesheet"
+    <link rel="stylesheet" href="{{url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet"
     href="{{url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='plugins/daterangepicker/daterangepicker.css')}}">
-  <!-- CSS Loader -->
-  <link rel="stylesheet" href="{{url_for('static' , filename='dist/css/preloader.css')}}">
+  <link rel="stylesheet"
+    href="{{url_for('static', filename='plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+   <!-- CSS Loader -->
+   <link rel="stylesheet" href="{{url_for('static' , filename='dist/css/preloader.css')}}">
   {%block css %}{%endblock%}
   <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/favicon.png')}}">
 
@@ -41,6 +42,7 @@
       </ul>
       <span> Hi, {{user.name}}
       </span>
+    
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
         <!-- Account Dropdown Menu -->
@@ -75,7 +77,11 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="#" class="brand-link">
+      {%if user.is_administrator()%}
+      <a href="{{url_for('admin.index')}}" class="brand-link">
+      {%else%}
+      <a href="{{url_for('admin.view_residents')}}" class="brand-link">
+        {%endif%}
         <img src="{{url_for('static', filename='assets/img/favicon.png')}}" alt="CherishCare Logo"
           class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">CherishCare Tech</span>
@@ -147,7 +153,15 @@
               </a>
             </li>
             {%endif%}
-            {%if user.is_administrator() or user.role.name=="Senior Carer"%}
+            {%if user.is_administrator() or user.role.name=="Cleaning Staff"%}
+            <li class="nav-item">
+              <a href="{{url_for('admin.cleaning')}}" class="nav-link">
+                <i class="nav-icon fas fa-magic"></i>
+                <p>Cleaning</p>
+              </a>
+            </li>
+            {%endif%}
+            {%if user.is_administrator() %}
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
@@ -290,6 +304,7 @@
 
     <!-- ./wrapper -->
     <script src="{{url_for('static' , filename='plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{url_for('static' , filename='plugins/jquery-ui/jquery-ui.min.js')}}"></script>
     <script src="{{url_for('static' , filename='plugins/moment/moment.min.js')}}"></script>
     <script src="{{url_for('static' , filename='plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{url_for('static' , filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>

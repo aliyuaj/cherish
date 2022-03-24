@@ -2,11 +2,11 @@ from email import message
 from flask import render_template, redirect, request, session, url_for, flash, current_app
 from flask_login import login_required, current_user
 from dateutil import relativedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import Counter
 from . import admin
-from ..models import db, User, Messages, Role, Resident, ActivityGroup, Activity, Kitchen, Maintenance, Timeline
-from ..methods import send_email, delete_item, trash_item, upload_photo, remove_photo
+from ..models import HandoverNotes, db, User, Messages, Role, Resident, ActivityGroup, Activity, Kitchen, Maintenance, Timeline, Medication, Cleaning
+from ..methods import send_email, delete_item, trash_item, upload_pdf, upload_photo, remove_photo, upload_pdf, remove_pdf
 
 import math
 
@@ -402,17 +402,41 @@ def view_residents():
     next_url = None
     if residents.has_next:
         next_url = url_for('admin.view_residents', page=page+1)
+    yesterday = datetime.now()- timedelta(hours=24)
+    notes = HandoverNotes.query.filter(HandoverNotes.date_time>=yesterday).order_by(HandoverNotes.date_time)
 
     return render_template('admin/pages/residents/view_residents.html', user=current_user,
-                           residents=residents, next_url=next_url, prev_url=prev_url, curr_page=page
+                           residents=residents, next_url=next_url, prev_url=prev_url, curr_page=page, notes=notes
                            )
 
-@admin.route('view-resident-profile/<resident_id>', methods=['GET'])
+@admin.route('view-resident-profile/<resident_id>', methods=['GET', 'POST'])
 @login_required
 def view_resident_profile(resident_id):
     resident = Resident.query.get_or_404(resident_id)
     age = relativedelta.relativedelta(datetime.now().date(), resident.dob).years
     groups =  ActivityGroup.query.filter().order_by(ActivityGroup.time)
+    if request.method == 'POST':
+        laundry_info = request.form.get('laundry_info', None)
+        if laundry_info:
+            resident = Resident.query.get_or_404(resident_id)
+            resident.laundry_info =  laundry_info
+            db.session.add(resident)
+            db.session.commit()
+            flash('Laundry info updated', category='success')
+        
+        med_name = request.form.get('med_name', None)
+        if med_name:
+            dosage = request.form.get('med_dosage')
+            complaint = request.form.get('complaint')
+            time_given = datetime.strptime(request.form.get('time_given'), '%d/%m/%Y %I:%M %p')
+            med = Medication(name=med_name, dosage=dosage, complaint=complaint, date_time=time_given,
+                                    med_issuer=current_user.id, med_recipient_id=resident.id)
+            db.session.add(med)
+            db.session.commit()
+            flash('Medications updated', category='success')
+        
+        return render_template('admin/pages/residents/view_resident_profile.html', user=current_user, resident=resident, age=age, groups=groups)
+    
     return render_template('admin/pages/residents/view_resident_profile.html', user=current_user, resident=resident, age=age, groups=groups)
 
 @admin.route('edit-resident/<resident_id>', methods=['GET', 'POST'])
@@ -477,6 +501,25 @@ def change_resident_photo(resident_id):
     db.session.commit()
     groups =  ActivityGroup.query.filter().order_by(ActivityGroup.time)
     age = relativedelta.relativedelta(datetime.now().date(), resident.dob).years
+    return render_template('admin/pages/residents/view_resident_profile.html', user=current_user, resident=resident, age=age, groups=groups)
+
+@admin.route('/change-care-plan/<resident_id>', methods=['GET','POST'])
+@login_required
+def change_care_plan(resident_id):
+    pdf = request.files['new_pdf']
+    file_upload = upload_pdf(pdf)
+    if file_upload["status"]== "failed":
+        flash(f"File does not meet requirement{file_upload['file']}", category='error')
+        return redirect(url_for('.view_resident_profile'))  
+    file_name = file_upload["file"]
+    resident = Resident.query.get_or_404(resident_id)
+    remove_pdf(resident.care_plan) #remove old photo
+    resident.care_plan = file_name
+    db.session.add(resident)
+    db.session.commit()
+    groups =  ActivityGroup.query.filter().order_by(ActivityGroup.time)
+    age = relativedelta.relativedelta(datetime.now().date(), resident.dob).years
+    flash(f"Care plan uploaded successfully", category='error')
     return render_template('admin/pages/residents/view_resident_profile.html', user=current_user, resident=resident, age=age, groups=groups)
 
 @admin.route('/app-settings', methods=['GET', 'POST'])
@@ -653,6 +696,24 @@ def maintenance_view():
     requests = Maintenance.query.join(User, Maintenance.reported_by==User.id).filter().order_by(Maintenance.report_date)
     return render_template('admin/pages/maintenance/all_requests.html', user=current_user, requests=requests, title=title)
 
+@admin.route('/cleaning', methods=['GET', 'POST'])
+@login_required
+def cleaning():
+    if request.method == "POST":
+        location = request.form.get('loc_name', None)
+        if location:
+            time_cleaned = datetime.strptime(request.form.get('time_cleaned'), '%d/%m/%Y %I:%M %p')
+            clean = Cleaning(location=location, cleaned_by=current_user.id, date_time=time_cleaned)
+            db.session.add(clean)
+            db.session.commit()
+            flash(f'Cleaning history updated')
+            return redirect(url_for('.cleaning')) 
+        
+    title = "Cleaning"
+    yesterday = datetime.now()- timedelta(hours=24)
+    cleanings = Cleaning.query.join(User, Cleaning.cleaned_by==User.id).filter(Cleaning.date_time>yesterday).order_by(Cleaning.date_time)
+    return render_template('admin/pages/cleaning/cleaning.html', user=current_user, cleanings=cleanings, title=title)
+
 @admin.route('/kitchen', methods=['GET', 'POST'])
 @login_required
 def kitchen(): 
@@ -707,3 +768,24 @@ def kitchen():
     title = "Kitchen"
     items = Kitchen.query.filter().order_by(Kitchen.item)
     return render_template('admin/pages/kitchen/kitchen.html', user=current_user, items=items, title=title)
+
+@admin.route('/medication-history/<resident_id>', methods=['GET', 'POST'])
+@login_required
+def medication_history(resident_id):
+    resident = Resident.query.get(resident_id)    
+    title = "Medication History"
+    medications = Medication.query.join(User, Medication.med_issuer==User.id).filter(Medication.med_recipient_id==resident_id).order_by(Medication.date_time)
+    return render_template('admin/pages/residents/medication_history.html', user=current_user, medications=medications, resident_id=resident_id , title=title, resident=resident)
+
+@admin.route('/handover', methods=['GET', 'POST'])
+@login_required
+def handover():
+    if request.method == "POST":
+        content = request.form.get('content', None)
+        if content:
+            note = HandoverNotes(content=content, date_time=datetime.now())
+            db.session.add(note)
+            db.session.commit()
+            return redirect(url_for('.view_residents')) 
+        
+    

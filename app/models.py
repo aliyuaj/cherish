@@ -24,6 +24,7 @@ class Resident(db.Model):
     biography = db.Column(db.String(3000))
     ethnicity = db.Column(db.String(64))
     medical_condition = db.Column(db.String(500))
+    laundry_info = db.Column(db.String(500))
     abilities = db.Column(db.String(500))
     allergies = db.Column(db.String(500))
     diet = db.Column(db.String(500))
@@ -31,9 +32,11 @@ class Resident(db.Model):
     nok_email = db.Column(db.String(64))
     nok_phone = db.Column(db.String(64))
     profile_photo = db.Column(db.String(64), default='avatar.png')
+    care_plan = db.Column(db.String(64),default='careplan.pdf')
     resident_type = db.Column(db.String(64), default='Permanent')
     care_address = db.Column(db.String(256))
     admission_date = db.Column(db.Date)
+    medication = db.relationship('Medication', backref='med_resident', foreign_keys='Medication.med_recipient_id')
 class Permission:
     READ = 1
     EDIT = 2
@@ -106,8 +109,10 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     email = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
+    cleaner = db.relationship('Cleaning', backref='cleaner', foreign_keys='Cleaning.cleaned_by')
     repairs_reported = db.relationship('Maintenance', backref='reporter', foreign_keys='Maintenance.reported_by')
     timeline_entry = db.relationship('Timeline', backref='user_entry', foreign_keys='Timeline.user_entry_id')
+    med_issue = db.relationship('Medication', backref='med_issuer_staff', foreign_keys='Medication.med_issuer')
     confirmed = db.Column(db.Boolean, default=True)
     active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -275,3 +280,35 @@ class Maintenance(db.Model):
     reported_by = db.Column(db.ForeignKey('User.id'))    
     status = db.Column(db.String(100))    
     report_date = db.Column(db.DateTime, server_default=db.func.now())
+
+class Cleaning(db.Model):
+    __tablename__ = 'cleaning'
+    __table_args__ = {
+        'extend_existing': True
+    }
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String(100))
+    cleaned_by = db.Column(db.ForeignKey('User.id'))    
+    date_time = db.Column(db.DateTime, server_default=db.func.now())
+
+class Medication(db.Model):
+    __tablename__ = 'medication'
+    __table_args__ = {
+        'extend_existing': True
+    }
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    dosage = db.Column(db.String(100))
+    med_issuer = db.Column(db.ForeignKey('User.id'))    
+    med_recipient_id = db.Column(db.ForeignKey('resident.id'))    
+    complaint = db.Column(db.String(100))    
+    date_time = db.Column(db.DateTime, server_default=db.func.now())
+
+class HandoverNotes(db.Model):
+    __tablename__ = 'handovernotes'
+    __table_args__ = {
+        'extend_existing': True
+    }
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(500))
+    date_time = db.Column(db.DateTime, server_default=db.func.now())

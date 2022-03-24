@@ -14,7 +14,8 @@ class Config:
     CHERISH_ADMIN = os.environ.get('CHERISH_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_DEST = 'app/static/uploads/'
-    MAX_CONTENT_LENGTH = 1024 * 1024 * 5 #5MB
+    PDF_UPLOAD_DEST = 'app/static/uploads/pdf'
+    #MAX_CONTENT_LENGTH = 1024 * 1024 * 5 #5MB
     ALLOWED_EXTENSIONS = set(['.png', '.jpg', '.jpeg'])
     ITEMS_PER_PAGE = 10
     @staticmethod

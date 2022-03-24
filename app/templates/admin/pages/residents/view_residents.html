@@ -18,6 +18,31 @@
 
 <section class="content">
   <!-- Default box -->
+  <div class="card card-info">
+    <div class="card-header">
+      <h3 class="card-title"><b>Handover Notes</b> &nbsp;&nbsp;&nbsp;&nbsp; <a style="color: blue; font: bolder;" class="float-right" data-toggle="modal"
+        data-target="#handover"><i class="fas fa-plus"></i></a>
+      </h3>
+      
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+        </button>
+      </div>
+      <!-- /.card-tools -->
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+      {%if notes.count()==0 %}
+
+      {%else%}
+      {%for note in notes%}
+      <p>{{note.content}}</p>
+      {%endfor%}
+      {%endif%}
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
   <h1 class="">Residents</h1>
   <div class="card card-solid">
     <div class="card-body pb-0">
@@ -51,7 +76,7 @@
             </div>
             <div class="card-footer">
               <div class="text-right">
-                {%if user.is_administrator()%}
+                {%if user.is_administrator() or user.role.name=='Senior Carer'%}
 
                 <a href="{{url_for('.edit_resident', resident_id =resident.id)}}" class="btn btn-sm bg-teal">
                   <i class="fas fa-edit">Edit</i>
@@ -70,6 +95,33 @@
   </div>
 </section>
 <!-- /.content -->
+
+<div class="modal fade" id="handover">
+  <div class="modal-dialog">
+      <div class="modal-content bg-default">
+          <div class="modal-header">
+              <h4 class="modal-title">Add to Handover Notes</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+              <form action="{{url_for('.handover')}}" method="post" id="handoverForm">
+                  <label for="status">Content</label>
+                  <div class="form-group">
+                      <textarea class="form-control" name="content" id="" rows="3" required></textarea>
+                  </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+          </form>
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 {%endblock%}
 {%block js %}
 <!-- jQuery -->

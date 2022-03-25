@@ -348,7 +348,11 @@ def change_user_photo(user_id):
     user.profile_photo = file_name
     db.session.add(user)
     db.session.commit()
-    return render_template('admin/index.html', user=current_user)
+    if user.is_administrator():
+        return redirect(url_for('admin.index'))
+    else:
+        return redirect(url_for('admin.view_residents'))
+
 
 @admin.route('add_resident', methods=['GET', 'POST'])
 @login_required

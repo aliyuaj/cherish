@@ -737,21 +737,21 @@ def kitchen():
                 flash(f'Added new item {new_item}', category='success')
             return redirect(url_for('.kitchen'))
 
-        edit_item_id = request.form.get('edit_item_id', None)
+        edit_item_id = request.form.get('item_id', None)
         if edit_item_id:
             kitchen_item = Kitchen.query.get_or_404(edit_item_id)
             quantity = request.form.get('quantity')
             ideal_quantity = request.form.get('ideal_quantity')
             location = request.form.get('location')
             
-            new_item_name = request.form.get('new_item_name', None)
+            new_item_name = request.form.get('edit_item_name', None)
             name_check = Kitchen.query.filter_by(item=new_item_name).first()
-            if name_check:
+            if name_check and name_check.id==edit_item_id:
                 flash(f'The item name <b>{new_item_name}</b> already exists', category='error')
                 return redirect(url_for('.kitchen'))
             
             kitchen_item.item = new_item_name
-            kitchen_item.quantity = quantity
+            kitchen_item.quantity_left = quantity
             kitchen_item.safe_quantity = ideal_quantity
             kitchen_item.location = location
 

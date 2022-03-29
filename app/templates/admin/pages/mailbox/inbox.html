@@ -116,7 +116,7 @@
                 
                 
                 <td class="mailbox-name"><a href="{{url_for('admin.read',source='inbox', msg_id=message.id)}}">{{sender}}</a></td>
-                <td class="mailbox-subject"><b>{{message.subject}}</b> - {{message.message[:40]}}...
+                <td class="mailbox-subject"><b>{{message.subject}}</b> - {{message.message[:40]|safe}}...
                 </td>
                 <td class="mailbox-date" stye="display: inline;">{{ moment(message.date_time).format('LLL') }}</td>
               </tr>
